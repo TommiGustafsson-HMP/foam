@@ -1,16 +1,16 @@
 {
-  "name": "foam-vscode",
-  "displayName": "Foam",
-  "description": "VS Code + Markdown + Wikilinks for your note taking and knowledge base",
+  "name": "foam-vscode-gollum",
+  "displayName": "Foam for Gollum",
+  "description": "VS Code + Markdown + Wikilinks for your note taking and knowledge base (Gollum Edition)",
   "private": true,
   "repository": {
-    "url": "https://github.com/foambubble/foam",
+    "url": "https://github.com/TommiGustafsson-HMP/foam",
     "type": "git"
   },
-  "homepage": "https://github.com/foambubble/foam",
-  "version": "0.26.12",
+  "homepage": "https://github.com/TommiGustafsson-HMP/foam",
+  "version": "1.0.0",
   "license": "MIT",
-  "publisher": "foam",
+  "publisher": "Hyvnmielenpelitry",
   "engines": {
     "vscode": "^1.96.0"
   },
