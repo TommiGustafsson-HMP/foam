@@ -26,12 +26,13 @@ export abstract class MarkdownLink {
             section: section ?? '',
             alias: alias ?? '',
           };
-        } else {
+        }
+        if (wikiLinkOrder === 'alias-first') {
           // use Gollum-style syntact
           const [, alias, target, section] = this.wikilinkRegex2.exec(
             link.rawText
           );
-          if (!target) {
+          if ((target ?? '') === '') {
             return {
               target: alias?.replace(/\\/g, '') ?? '',
               section: section ?? '',
