@@ -43,22 +43,38 @@ export const markdownItWikilinkNavigation = (
         }
 
         const resourceTitleStartLetter = resource.title.substring(0, 1);
-        const resourceTitleStartLetterUC = resourceTitleStartLetter.toUpperCase();
-        const resourceTitleStartLetterLC = resourceTitleStartLetter.toLowerCase();
-        const isResourceTitleStartLetterUC = (resourceTitleStartLetter === resourceTitleStartLetterUC);
-
+        const resourceTitleStartLetterUC =
+          resourceTitleStartLetter.toUpperCase();
+        const resourceTitleStartLetterLC =
+          resourceTitleStartLetter.toLowerCase();
+        const isResourceTitleStartLetterUC =
+          resourceTitleStartLetter === resourceTitleStartLetterUC;
         const targetLastIndexOfSlash = target.lastIndexOf('/');
-        const targetTitleStartLetter = targetLastIndexOfSlash >= 0 ? target.substring(targetLastIndexOfSlash + 1, targetLastIndexOfSlash + 2) : target.substring(0, 1);  
+        const targetTitleStartLetter =
+          targetLastIndexOfSlash >= 0
+            ? target.substring(
+                targetLastIndexOfSlash + 1,
+                targetLastIndexOfSlash + 2
+              )
+            : target.substring(0, 1);
         const targetTitleStartLetterUC = targetTitleStartLetter.toUpperCase();
-        const isTargetTitleStartLetterUC = (targetTitleStartLetter === targetTitleStartLetterUC);
-
+        const isTargetTitleStartLetterUC =
+          targetTitleStartLetter === targetTitleStartLetterUC;
         let resourceTitle = resource.title;
         if (isResourceTitleStartLetterUC === isTargetTitleStartLetterUC) {
           resourceTitle = resource.title;
-        } else if (isResourceTitleStartLetterUC && !isTargetTitleStartLetterUC) {
-          resourceTitle = resourceTitleStartLetterLC + resource.title.substring(1);
-        } else if (!isResourceTitleStartLetterUC && isTargetTitleStartLetterUC) {
-          resourceTitle = resourceTitleStartLetterUC + resource.title.substring(1);
+        } else if (
+          isResourceTitleStartLetterUC &&
+          !isTargetTitleStartLetterUC
+        ) {
+          resourceTitle =
+            resourceTitleStartLetterLC + resource.title.substring(1);
+        } else if (
+          !isResourceTitleStartLetterUC &&
+          isTargetTitleStartLetterUC
+        ) {
+          resourceTitle =
+            resourceTitleStartLetterUC + resource.title.substring(1);
         }
 
         const resourceLabel = isEmpty(alias)
