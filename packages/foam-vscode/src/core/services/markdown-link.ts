@@ -29,9 +29,22 @@ export abstract class MarkdownLink {
         }
         if (wikiLinkOrder === 'alias-first') {
           // use Gollum-style syntact
-          const [, alias, target, section] = this.wikilinkRegex2.exec(
+          let [, alias, target, section] = this.wikilinkRegex2.exec(
             link.rawText
           );
+
+          if (alias && alias.startsWith('/')) {
+            alias = alias.substring(1);
+          } else if (alias && alias.startsWith('../')) {
+            alias = alias.substring(3);
+          }
+
+          if (target && target.startsWith('/')) {
+            target = target.substring(1);
+          } else if (target && target.startsWith('../')) {
+            target = target.substring(3);
+          }
+
           if ((target ?? '') === '') {
             return {
               target: alias?.replace(/\\/g, '') ?? '',

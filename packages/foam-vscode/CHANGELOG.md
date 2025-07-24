@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.0.2] - 2025-07-24
+
+- Added support for links starting with `/` and `../`.
+
 ## [1.0.1] - 2025-07-23
 
 - Updated README.MD.
