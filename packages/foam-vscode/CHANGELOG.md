@@ -2,6 +2,12 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.0.4] - 2025-07-24
+
+- Changed setting name to `foam.wikilinks.syntax` with `gollum` and `mediawiki` options.
+- Added `foam.wikilinks.case-insensitive` setting with `true` and `false`.
+- Support for recognizing the need for `/` in wikilinks referring to document root items.
+
 ## [1.0.3] - 2025-07-24
 
 - Added support for lowercase wikilinks.

@@ -1,6 +1,7 @@
 import { ResourceLink } from '../model/note';
 import { TextEdit } from './text-edit';
 import { getFoamVsCodeConfig } from '../../services/config';
+import { isPromise } from 'util/types';
 
 export abstract class MarkdownLink {
   private static wikilinkRegex = new RegExp(
@@ -16,8 +17,8 @@ export abstract class MarkdownLink {
   public static analyzeLink(link: ResourceLink) {
     try {
       if (link.type === 'wikilink') {
-        const wikiLinkOrder = getFoamVsCodeConfig('wikilinks.order');
-        if (wikiLinkOrder === 'alias-last') {
+        const wikiLinkSyntax = getFoamVsCodeConfig('wikilinks.syntax');
+        if (wikiLinkSyntax === 'mediawiki') {
           const [, target, section, alias] = this.wikilinkRegex.exec(
             link.rawText
           );
@@ -27,22 +28,28 @@ export abstract class MarkdownLink {
             alias: alias ?? '',
           };
         }
-        if (wikiLinkOrder === 'alias-first') {
+        if (wikiLinkSyntax === 'gollum') {
           // use Gollum-style syntact
           let [, alias, target, section] = this.wikilinkRegex2.exec(
             link.rawText
           );
 
+          let isRoot = false;
+
           if (alias && alias.startsWith('/')) {
             alias = alias.substring(1);
+            isRoot = true;
           } else if (alias && alias.startsWith('../')) {
             alias = alias.substring(3);
+            isRoot = true;
           }
 
           if (target && target.startsWith('/')) {
             target = target.substring(1);
+            isRoot = true;
           } else if (target && target.startsWith('../')) {
             target = target.substring(3);
+            isRoot = true;
           }
 
           if ((target ?? '') === '') {
@@ -50,12 +57,14 @@ export abstract class MarkdownLink {
               target: alias?.replace(/\\/g, '') ?? '',
               section: section ?? '',
               alias: '',
+              isRoot: isRoot
             };
           } else {
             return {
               target: target?.replace(/\\/g, '') ?? '',
               section: section ?? '',
               alias: alias ?? '',
+              isRoot: isRoot
             };
           }
         }
@@ -68,6 +77,7 @@ export abstract class MarkdownLink {
           target: target ?? '',
           section: section ?? '',
           alias: alias ?? '',
+          isRoot: false
         };
       }
       throw new Error(`Link of type ${link.type} is not supported`);

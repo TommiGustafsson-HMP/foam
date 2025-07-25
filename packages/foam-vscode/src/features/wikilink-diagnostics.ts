@@ -129,8 +129,8 @@ export function updateDiagnostics(
       document.getText()
     );
 
-    const wikiLinkOrder = getFoamVsCodeConfig('wikilinks.order');
-    const isAliasFirst = wikiLinkOrder === 'alias-first';
+    const wikiLinkSyntax = getFoamVsCodeConfig('wikilinks.syntax');
+    const isGollum = wikiLinkSyntax === 'gollum';
 
     for (const link of resource.links) {
       if (link.type === 'wikilink') {
@@ -159,7 +159,7 @@ export function updateDiagnostics(
         }
         if (section && targets.length === 1) {
           const resource = targets[0];
-          if (isNone(Resource.findSection2(resource, section, isAliasFirst))) {
+          if (isNone(Resource.findSection2(resource, section, isGollum))) {
             const range = Range.create(
               link.range.start.line,
               link.range.start.character + target.length + 2,

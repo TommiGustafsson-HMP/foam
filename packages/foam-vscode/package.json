@@ -8,7 +8,7 @@
     "type": "git"
   },
   "homepage": "https://github.com/TommiGustafsson-HMP/foam",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "publisher": "Hyvnmielenpelitry",
   "engines": {
@@ -656,17 +656,21 @@
           "description": "Custom graph styling settings. An example is present in the documentation.",
           "default": {}
         },
-        "foam.wikilinks.order": {
+        "foam.wikilinks.syntax": {
           "type": "string",
-          "default": "alias-last",
+          "default": "gollum",
           "enum": [
-            "alias-first",
-            "alias-last"
+            "gollum",
+            "mediawiki"
           ],
           "enumDescriptions": [
             "Wiki links as [[Alias|Page Name]]",
             "Wiki links as [[Page Name|Alias]]"
           ]
+        },
+        "foam.wikilinks.case-insensitive": {
+          "type": "boolean",
+          "default": true
         }
       }
     },

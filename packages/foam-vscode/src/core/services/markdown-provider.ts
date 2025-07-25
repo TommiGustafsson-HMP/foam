@@ -13,6 +13,10 @@ import { ResourceProvider } from '../model/provider';
 import { MarkdownLink } from './markdown-link';
 import { IDataStore } from './datastore';
 import { uniqBy } from 'lodash';
+import { getFoamVsCodeConfig } from '../../services/config';
+import * as vscode from 'vscode';
+import * as path from 'path';
+
 
 export class MarkdownResourceProvider implements ResourceProvider {
   private disposables: IDisposable[] = [];
@@ -47,13 +51,39 @@ export class MarkdownResourceProvider implements ResourceProvider {
     return isSome(content) ? this.parser.parse(uri, content) : null;
   }
 
+  getResourceSubDir(filePath: string): string | undefined
+  {
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath));
+    if (!workspaceFolder) {
+        return undefined; // File is not under any workspace folder
+    }
+
+    const relativePath = path.relative(workspaceFolder.uri.path, filePath);
+    const dir = path.dirname(relativePath);
+
+    if(dir === '.'){
+      return '';
+    } else {
+      return dir + '/';
+    }
+  }
+
   resolveLink(
     workspace: FoamWorkspace,
     resource: Resource,
     link: ResourceLink
   ) {
     let targetUri: URI | undefined;
-    const { target, section } = MarkdownLink.analyzeLink(link);
+    const isGollum = getFoamVsCodeConfig('wikilinks.syntax') === 'gollum';
+    let { target, section, alias, isRoot } = MarkdownLink.analyzeLink(link);
+    
+    if(isGollum && target.indexOf('/') < 0 && !isRoot) {
+      const subdir = this.getResourceSubDir(resource.uri.path);
+      if((subdir ?? '').length > 0) {
+        target = subdir + target;
+      }
+    }
+    
     switch (link.type) {
       case 'wikilink': {
         let definitionUri = undefined;

@@ -7,6 +7,7 @@ import { ResourceProvider } from './provider';
 import { IDisposable } from '../common/lifecycle';
 import { IDataStore } from '../services/datastore';
 import TrieMap from 'mnemonist/trie-map';
+import { getFoamVsCodeConfig } from '../../services/config';
 
 export class FoamWorkspace implements IDisposable {
   private onDidAddEmitter = new Emitter<Resource>();

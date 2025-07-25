@@ -10,6 +10,7 @@ import { Range } from '../../core/model/range';
 import { isEmpty } from 'lodash';
 import { toSlug } from '../../utils/slug';
 import { isNone } from '../../core/utils';
+import { getFoamVsCodeConfig } from '../../services/config';
 
 export const markdownItWikilinkNavigation = (
   md: markdownit,
@@ -42,45 +43,32 @@ export const markdownItWikilinkNavigation = (
           return getPlaceholderLink(label);
         }
 
-        const resourceTitleStartLetter = resource.title.substring(0, 1);
-        const resourceTitleStartLetterUC =
-          resourceTitleStartLetter.toUpperCase();
-        const resourceTitleStartLetterLC =
-          resourceTitleStartLetter.toLowerCase();
-        const isResourceTitleStartLetterUC =
-          resourceTitleStartLetter === resourceTitleStartLetterUC;
-        const targetLastIndexOfSlash = target.lastIndexOf('/');
-        const targetTitleStartLetter =
-          targetLastIndexOfSlash >= 0
-            ? target.substring(
-                targetLastIndexOfSlash + 1,
-                targetLastIndexOfSlash + 2
-              )
-            : target.substring(0, 1);
-        const targetTitleStartLetterUC = targetTitleStartLetter.toUpperCase();
-        const isTargetTitleStartLetterUC =
-          targetTitleStartLetter === targetTitleStartLetterUC;
+        const wikiLinkCaseInsensitive = getFoamVsCodeConfig('wikilinks.case-insensitive');
+        
         let resourceTitle = resource.title;
-        if (isResourceTitleStartLetterUC === isTargetTitleStartLetterUC) {
-          resourceTitle = resource.title;
-        } else if (
-          isResourceTitleStartLetterUC &&
-          !isTargetTitleStartLetterUC
-        ) {
-          resourceTitle =
-            resourceTitleStartLetterLC + resource.title.substring(1);
-        } else if (
-          !isResourceTitleStartLetterUC &&
-          isTargetTitleStartLetterUC
-        ) {
-          resourceTitle =
-            resourceTitleStartLetterUC + resource.title.substring(1);
+        if(wikiLinkCaseInsensitive)
+        {
+          const resourceTitleStartLetter = resource.title.substring(0, 1);
+          const resourceTitleStartLetterUC = resourceTitleStartLetter.toUpperCase();
+          const resourceTitleStartLetterLC = resourceTitleStartLetter.toLowerCase();
+          const isResourceTitleStartLetterUC = (resourceTitleStartLetter === resourceTitleStartLetterUC);
+          const targetLastIndexOfSlash = target.lastIndexOf('/');
+          const targetTitleStartLetter = targetLastIndexOfSlash >= 0 ?
+            target.substring(targetLastIndexOfSlash + 1, targetLastIndexOfSlash + 2) :
+            target.substring(0, 1);
+          const targetTitleStartLetterUC = targetTitleStartLetter.toUpperCase();
+          const isTargetTitleStartLetterUC = (targetTitleStartLetter === targetTitleStartLetterUC);
+
+          if (isResourceTitleStartLetterUC === isTargetTitleStartLetterUC) {
+            resourceTitle = resource.title;
+          } else if (isResourceTitleStartLetterUC && !isTargetTitleStartLetterUC) {
+            resourceTitle = resourceTitleStartLetterLC + resource.title.substring(1);
+          } else if (!isResourceTitleStartLetterUC && isTargetTitleStartLetterUC) {
+            resourceTitle = resourceTitleStartLetterUC + resource.title.substring(1);
+          }
         }
 
-        const resourceLabel = isEmpty(alias)
-          ? `${resourceTitle}${formattedSection}`
-          : alias;
-
+        const resourceLabel = isEmpty(alias) ? `${resourceTitle}${formattedSection}` : alias;
         const resourceLink = `/${vscode.workspace.asRelativePath(
           toVsCodeUri(resource.uri),
           false
