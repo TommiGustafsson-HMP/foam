@@ -2,7 +2,11 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
-## [1.0.4] - 2025-07-24
+## [1.0.5] - 2025-07-25
+
+- Fix relative links with subdirectories in documents in subdirectories.
+
+## [1.0.4] - 2025-07-25
 
 - Changed setting name to `foam.wikilinks.syntax` with `gollum` and `mediawiki` options.
 - Added `foam.wikilinks.case-insensitive` setting with `true` and `false`.

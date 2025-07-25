@@ -76,10 +76,10 @@ export class MarkdownResourceProvider implements ResourceProvider {
     let targetUri: URI | undefined;
     const isGollum = getFoamVsCodeConfig('wikilinks.syntax') === 'gollum';
     let { target, section, alias, isRoot } = MarkdownLink.analyzeLink(link);
+    const subdir = this.getResourceSubDir(resource.uri.path);
     
-    if(isGollum && target.indexOf('/') < 0 && !isRoot) {
-      const subdir = this.getResourceSubDir(resource.uri.path);
-      if((subdir ?? '').length > 0) {
+    if (isGollum) {
+      if (!isRoot && (subdir ?? '').length > 0) {
         target = subdir + target;
       }
     }
