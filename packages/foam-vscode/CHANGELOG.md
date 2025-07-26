@@ -2,6 +2,11 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.0.8] - 2025-07-26
+
+- Updated README.md.
+- A small performance fix.
+
 ## [1.0.7] - 2025-07-26
 
 - Added proper support for case insensitivity in previews.
