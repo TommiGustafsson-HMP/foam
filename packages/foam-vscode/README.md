@@ -8,7 +8,7 @@ Foam for Gollum is a fork of the [Foam](https://github.com/foambubble/foam/) ext
 
 - When a wikilink has an alias, the alias comes first: `[[Alias|Page Name]]`
 - Section headings after a hash (`#`) have a different syntax.
-- Subfolders are relative to the current document and not to the root of the wiki.
+- Subfolders are relative to the current document folder and not to the root of the wiki.
 
 ## New Settings
 
