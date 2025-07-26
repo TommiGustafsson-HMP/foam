@@ -1,39 +1,45 @@
 # Foam for Gollum
 
-Foam for Gollum is a fork of [Foam](https://github.com/foambubble/foam/), which adds support for Gollum-style wikilinks `[[Alias|Page Name]]`.
+Foam for Gollum is a fork of [Foam](https://github.com/foambubble/foam/), which adds support for Markdown syntax used in [Gollum wikis](https://github.com/gollum/gollum).
+
+Gollum-style wikilinks are used, for example, in [GitHub](https://github.com/) repository wikis.
 
 ## New Settings
 
-These are new settings and their defaults:
+The new settings in this extension and their defaults are:
 
 ```
-"foam.wikilinks.syntax": "gollum", // possible values: "gollum" and "mediawiki"
+"foam.wikilinks.syntax": "gollum",
 "foam.wikilinks.case-insensitive": true
 ```
 
-You don't need to specify them in Visual Studio Code settings, if the defaults work for you.
+The possible values for `"foam.wikilinks.syntax"` are `"gollum"` and `"mediawiki"`.
+
+You don't need to specify these settings in Visual Studio Code's settings, if the defaults work for you.
 
 It's best to add the above setting to workspace settings in the case you have multiple repositories with different notations. For repositories using the MediaWiki syntax `[[Page Name|Alias]]`, you need to specify `"foam.wikilinks.syntax": "mediawiki"`.
 
 ## New Features in This Extension
 
-This extension adds the support following Gollum features, when `"foam.wikilinks.syntax"` is `"gollum"`.
+### 1. Gollum-Style Wikilinks
 
-### Alias First in Wikilinks
+This extension adds support for the following Gollum-style wikilink features, when `"foam.wikilinks.syntax"` setting is `"gollum"`.
+
+#### 1.1. Alias First in Wikilinks
 
 Wikilinks with an alias follow the convention `[[Alias|Page Name]]`.
 
-### Anchors Follow Gollum Notation
+#### 1.2. Section Heading Anchors Follow Gollum Notation
 
-Anchors for section headings (`#Section Name` in the wikilink) use the Gollum format, which is URL encoded.
+Anchors for section headings (`#` + the section heading name in the wikilink) use the Gollum format, which is the following:
 
-For example, `#4. My Test Heading` renders as `#4-my-test-heading`.
+- The text is converted to lower case.
+- Special characters are removed.
+- Spaces are replaced with dashes.
 
-### Case-Insensitive Wikilinks
+For example, if you have a section heading `4. My Test Heading`, you should use `#4-my-test-heading` as the anchor in the wikilink.
 
-You can write `[[my page]]` and it links to `My page.md` but shows as `my page` in the preview.
-
-### Gollum-Style Subdirectory Support
+#### 1.3. Gollum-Style Subdirectory Support
 
 In Gollum, wikilinks are **relative to the current document** and not to the root of the wiki. This extension adds support for the following notations in wikilinks:
 
@@ -46,6 +52,14 @@ In Gollum, wikilinks are **relative to the current document** and not to the roo
 
 Multiple levels of subdirectories are supported.
 
-## Foam Features
+### 2. Case-Insensitive Wikilinks
 
-Please refer to [Foam documentation](https://github.com/foambubble/foam/) for the full description of features.
+When `"foam.wikilinks.case-insensitive"` setting is `true`, wikilink parsing is case-insensitive.
+
+#### Example
+
+- `[[my page]]` links to `My page.md` but shows as `my page` in the preview.
+
+## Foam Extension Features
+
+Please refer to [Foam documentation](https://github.com/foambubble/foam/) for the full description of the features of the Foam extension.
