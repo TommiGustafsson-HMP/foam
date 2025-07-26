@@ -1,8 +1,14 @@
 # Foam for Gollum
 
-Foam for Gollum is a fork of [Foam](https://github.com/foambubble/foam/), which adds support for Markdown syntax used in [Gollum wikis](https://github.com/gollum/gollum).
+Foam for Gollum is a fork of the [Foam](https://github.com/foambubble/foam/) extension, which adds support for the **wikilink syntax** that is used in [Markdown](https://www.markdownguide.org/) documents in Gollum-based wikis.
 
-Gollum-style wikilinks are used, for example, in [GitHub](https://github.com/) repository wikis.
+[Gollum](https://github.com/gollum/gollum) is a wiki software based on the [Git version control system](https://git-scm.com/). For example, [GitHub](https://github.com/)'s repository wikis are based on Gollum and use its syntax.
+
+**Wikilinks** are page name links in double brackets (`[[Page Name]]`), which are used in wiki pages to link to other wiki pages. The main differences of the Gollum-style wikilinks to the standard wikilink syntax of [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) are:
+
+- When a wikilink has an alias, the alias comes first: `[[Alias|Page Name]]`
+- Section headers after a hash (`#`) have a different syntax.
+- Subfolders are relative to the current document and not to the root of the wiki.
 
 ## New Settings
 
