@@ -7,7 +7,7 @@ Foam for Gollum is a fork of the [Foam](https://github.com/foambubble/foam/) ext
 **Wikilinks** are page name links in double brackets (`[[Page Name]]`), which are used in wiki pages to link to other wiki pages. The main differences of the Gollum-style wikilinks to the standard wikilink syntax of [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) are:
 
 - When a wikilink has an alias, the alias comes first: `[[Alias|Page Name]]`
-- Section headers after a hash (`#`) have a different syntax.
+- Section headings after a hash (`#`) have a different syntax.
 - Subfolders are relative to the current document and not to the root of the wiki.
 
 ## New Settings
