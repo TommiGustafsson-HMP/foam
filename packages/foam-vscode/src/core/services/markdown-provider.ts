@@ -51,21 +51,50 @@ export class MarkdownResourceProvider implements ResourceProvider {
     return isSome(content) ? this.parser.parse(uri, content) : null;
   }
 
-  getResourceSubDir(filePath: string): string | undefined
+  getResourceSubDir(filePath: string, parentCount: number)
   {
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath));
     if (!workspaceFolder) {
         return undefined; // File is not under any workspace folder
     }
 
-    const relativePath = path.relative(workspaceFolder.uri.path, filePath);
-    const dir = path.dirname(relativePath);
-
-    if(dir === '.'){
-      return '';
+    const relativePath = (path.relative(workspaceFolder.uri.path, filePath) ?? '').replace(/\\/g, '/');
+    let dir: string = relativePath;
+    let dirLastIndexOfSlash = dir.lastIndexOf('/');
+    if (dirLastIndexOfSlash >= 0) {
+      dir = dir.substring(0, dirLastIndexOfSlash);
     } else {
-      return dir + '/';
+      dir = '';
     }
+
+    let count: number = 0;
+    let parentOverCount: boolean = false;
+    while (count < parentCount) {
+      count++;
+      if (dir === '') {
+        parentOverCount = true;
+        break;
+      }
+      let lastIndexOfSlash = dir.lastIndexOf('/');
+      if (lastIndexOfSlash < 0) {
+        dir = '';
+        if (parentCount > count) {
+          parentOverCount = true;
+        }
+        break;
+      }
+      
+      dir = dir.substring(0, lastIndexOfSlash);
+    }
+
+    if (dir ?? '' !== '') {
+      dir += '/';
+    }
+
+    return { 
+      subdir: dir, 
+      parentOverCount: parentOverCount
+    };
   }
 
   resolveLink(
@@ -75,10 +104,13 @@ export class MarkdownResourceProvider implements ResourceProvider {
   ) {
     let targetUri: URI | undefined;
     const isGollum = getFoamVsCodeConfig('wikilinks.syntax') === 'gollum';
-    let { target, section, alias, isRoot } = MarkdownLink.analyzeLink(link);
-    const subdir = this.getResourceSubDir(resource.uri.path);
-    
+    let { target, section, alias, isRoot, parentCount } = MarkdownLink.analyzeLink(link);
+       
     if (isGollum) {
+      const { subdir, parentOverCount } = this.getResourceSubDir(resource.uri.path, parentCount);
+      if (parentOverCount) {
+        return undefined;
+      }
       if (!isRoot && (subdir ?? '').length > 0) {
         target = subdir + target;
       }

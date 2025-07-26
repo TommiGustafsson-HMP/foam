@@ -34,39 +34,33 @@ export abstract class MarkdownLink {
             link.rawText
           );
 
-          let isRoot = false;
-
-          if (alias && alias.startsWith('/')) {
-            alias = alias.substring(1);
-            isRoot = true;
-          } else if (alias && alias.startsWith('../')) {
-            alias = alias.substring(3);
-            isRoot = true;
+          if ((target ?? '') === '') {
+              target = alias;
+              alias = '';
           }
 
-          if (target && target.startsWith('/')) {
+          let isRoot = false;
+          let parentCount = 0;
+
+          if (target.startsWith('/')) {
             target = target.substring(1);
             isRoot = true;
-          } else if (target && target.startsWith('../')) {
+          }
+          if (target.startsWith('./')) {
+            target = target.substring(2);
+          }
+          while (target.startsWith('../')) {
             target = target.substring(3);
-            isRoot = true;
+            parentCount++;
           }
-
-          if ((target ?? '') === '') {
-            return {
-              target: alias?.replace(/\\/g, '') ?? '',
-              section: section ?? '',
-              alias: '',
-              isRoot: isRoot
-            };
-          } else {
-            return {
-              target: target?.replace(/\\/g, '') ?? '',
-              section: section ?? '',
-              alias: alias ?? '',
-              isRoot: isRoot
-            };
-          }
+        
+          return {
+            target: target?.replace(/\\/g, '') ?? '',
+            section: section ?? '',
+            alias: alias ?? '',
+            isRoot: isRoot,
+            parentCount: parentCount
+          };
         }
       }
       if (link.type === 'link') {
@@ -77,7 +71,8 @@ export abstract class MarkdownLink {
           target: target ?? '',
           section: section ?? '',
           alias: alias ?? '',
-          isRoot: false
+          isRoot: false,
+          parentCount: 0
         };
       }
       throw new Error(`Link of type ${link.type} is not supported`);

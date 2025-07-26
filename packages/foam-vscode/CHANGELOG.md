@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.0.6] - 2025-07-26
+
+- Added support for wikilinks with multiple parent directories, such as `../../Lawful`.
+
 ## [1.0.5] - 2025-07-25
 
 - Fix relative links with subdirectories in documents in subdirectories.
