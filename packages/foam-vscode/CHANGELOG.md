@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.0.7] - 2025-07-26
+
+- Added proper support for case insensitivity in previews.
+
 ## [1.0.6] - 2025-07-26
 
 - Added support for wikilinks with multiple parent directories, such as `../../Lawful`.

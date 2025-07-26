@@ -46,26 +46,13 @@ export const markdownItWikilinkNavigation = (
         const wikiLinkCaseInsensitive = getFoamVsCodeConfig('wikilinks.case-insensitive');
         
         let resourceTitle = resource.title;
-        if(wikiLinkCaseInsensitive)
-        {
-          const resourceTitleStartLetter = resource.title.substring(0, 1);
-          const resourceTitleStartLetterUC = resourceTitleStartLetter.toUpperCase();
-          const resourceTitleStartLetterLC = resourceTitleStartLetter.toLowerCase();
-          const isResourceTitleStartLetterUC = (resourceTitleStartLetter === resourceTitleStartLetterUC);
-          const targetLastIndexOfSlash = target.lastIndexOf('/');
-          const targetTitleStartLetter = targetLastIndexOfSlash >= 0 ?
-            target.substring(targetLastIndexOfSlash + 1, targetLastIndexOfSlash + 2) :
-            target.substring(0, 1);
-          const targetTitleStartLetterUC = targetTitleStartLetter.toUpperCase();
-          const isTargetTitleStartLetterUC = (targetTitleStartLetter === targetTitleStartLetterUC);
+        const targetLastIndexOfSlash = target.lastIndexOf('/');
+        const targetWithoutPath = targetLastIndexOfSlash >= 0 ?
+            target.substring(targetLastIndexOfSlash + 1) :
+            target;
 
-          if (isResourceTitleStartLetterUC === isTargetTitleStartLetterUC) {
-            resourceTitle = resource.title;
-          } else if (isResourceTitleStartLetterUC && !isTargetTitleStartLetterUC) {
-            resourceTitle = resourceTitleStartLetterLC + resource.title.substring(1);
-          } else if (!isResourceTitleStartLetterUC && isTargetTitleStartLetterUC) {
-            resourceTitle = resourceTitleStartLetterUC + resource.title.substring(1);
-          }
+        if(wikiLinkCaseInsensitive && resource.title.toLowerCase() === targetWithoutPath.toLowerCase()) {
+          resourceTitle = targetWithoutPath;
         }
 
         const resourceLabel = isEmpty(alias) ? `${resourceTitle}${formattedSection}` : alias;
