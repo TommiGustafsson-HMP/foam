@@ -44,15 +44,15 @@ export const markdownItWikilinkNavigation = (
         }
 
         const wikiLinkCaseInsensitive = getFoamVsCodeConfig('wikilinks.case-insensitive');
-        
         let resourceTitle = resource.title;
-        const targetLastIndexOfSlash = target.lastIndexOf('/');
-        const targetWithoutPath = targetLastIndexOfSlash >= 0 ?
+        if (wikiLinkCaseInsensitive) {
+          const targetLastIndexOfSlash = target.lastIndexOf('/');
+          const targetWithoutPath = targetLastIndexOfSlash >= 0 ?
             target.substring(targetLastIndexOfSlash + 1) :
             target;
-
-        if(wikiLinkCaseInsensitive && resource.title.toLowerCase() === targetWithoutPath.toLowerCase()) {
-          resourceTitle = targetWithoutPath;
+          if (resource.title.toLowerCase() === targetWithoutPath.toLowerCase()) {
+            resourceTitle = targetWithoutPath;
+          }
         }
 
         const resourceLabel = isEmpty(alias) ? `${resourceTitle}${formattedSection}` : alias;
