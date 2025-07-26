@@ -5,7 +5,7 @@ Foam for Gollum is a fork of [Foam](https://github.com/foambubble/foam/), which 
 These are the options and their defaults:
 
 ```
-"foam.wikilinks.syntax": "gollum",
+"foam.wikilinks.syntax": "gollum", // possible values: "gollum", "mediawiki"
 "foam.wikilinks.case-insensitive": true
 ```
 
