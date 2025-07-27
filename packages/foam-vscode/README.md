@@ -8,7 +8,7 @@ Foam for Gollum is a fork of the [Foam](https://github.com/foambubble/foam/) ext
 
 - When a wikilink has an alias, the alias comes first: `[[Alias|Page Name]]`
 - Section headings after a hash (`#`) have a different syntax.
-- Subfolders are relative to the current document folder and not to the root of the wiki.
+- Wikilinks are relative to the current document directory and not to the root directory of the wiki.
 
 ## New Settings
 
@@ -45,16 +45,18 @@ Anchors for section headings (`#` + the section heading name in the wikilink) us
 
 For example, if you have a section heading `4. My Test Heading`, you should use `#4-my-test-heading` as the anchor in the wikilink.
 
-#### 1.3. Gollum-Style Subdirectory Support
+#### 1.3. Gollum-Style Relative and Absolute Path Support
 
-In Gollum, wikilinks are **relative to the current document** and not to the root of the wiki. This extension adds support for the following notations in wikilinks:
+In Gollum, wikilinks are **relative to the current document directory** and not to the root of the wiki. If you are working with files in subdirectories, you need to pay attention to the path in wikilinks, since `[[Page Name]]` links to a document in the current subdirectory and not to a document in the root directory of the wiki. To access parent and root directories, you need to use `/` and `../` before the page name in a wikilink.
+
+This extension adds support for the following notations for wikilinks:
 
 | Notation | Description |
 | :------- | :---------- |
 | `[[/My page]]` | A starting slash `/` links to a document in the root directory. |
 | `[[../My page]]` | `../` links to a document in the parent directory. |
-| `[[My subdir/My page]]` | You can add subdirectory name and a slash to link to a *subdirectory under the current document directory*. |
-| `[[/My subdir/My page]]` | You can add a slash, a subdirectory name, and a slash to link to a *subdirectory under the root of the wiki*. |
+| `[[My subdir/My page]]` | You can add *a subdirectory name and a slash* to link to a *subdirectory under the current document directory*. |
+| `[[/My subdir/My page]]` | You can add *a slash, a subdirectory name and a slash* to link to a *subdirectory under the root directory of the wiki*. |
 
 Multiple levels of subdirectories are supported.
 
