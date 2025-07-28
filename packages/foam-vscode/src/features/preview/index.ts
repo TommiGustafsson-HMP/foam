@@ -11,19 +11,38 @@ import * as path from 'path';
 export function htmlRule (tokens, idx, options, env, self) {
   const token = tokens[idx];
   
-  if (token.content.startsWith('<img ')) {
-    const hasRootSrc = token.content.indexOf('src="/') >= 0;
-    if(hasRootSrc) {
-      const newContent = token.content.replace(/src="(\/[^"]+)"/, function (match, p1) {
+  let startIndex = 0;
+  let returnContent: string = "";
+  while (true) {
+    let imgTagIndex = token.content.indexOf('<img ', startIndex);
+    if (imgTagIndex >= startIndex) {
+      const srcIndex = token.content.indexOf('src="', imgTagIndex);
+      const hasRootSrc = token.content.substring(srcIndex + 5, srcIndex + 6) === '/';
+      const endingQuoteIndex = token.content.indexOf('"', srcIndex + 6);
+      const endingTagIndex = token.content.indexOf('>', endingQuoteIndex + 1);
+      let newContent = "";
+      if(hasRootSrc) {
+        const src = token.content.substring(srcIndex + 5, endingQuoteIndex);
         const workspaceFolder = vscode.workspace.workspaceFolders[0];
-        const srcPath = path.join(workspaceFolder.uri.fsPath, p1).replace(/\\/g, "/");
+        const srcPath = path.join(workspaceFolder.uri.fsPath, src).replace(/\\/g, "/");
         const vsCodePath = "https://file+.vscode-resource.vscode-cdn.net/" + srcPath;
-        return 'src="' + vsCodePath + '"';
-      });
-      return newContent
+        newContent = token.content.substring(startIndex, srcIndex + 5) + vsCodePath
+          + token.content.substring(endingQuoteIndex, endingTagIndex + 1);
+      } else {
+        newContent = token.content.substring(startIndex, endingTagIndex + 1);
+      }
+      returnContent += newContent
+      startIndex = endingTagIndex + 1;
+    } else {
+      break;
     }
   }
-  return token.content;
+
+  if(returnContent.length > 0) {
+    return returnContent;
+  } else {
+    return token.content;
+  }
 }
 
 export default async function activate(
@@ -35,6 +54,7 @@ export default async function activate(
   return {
     extendMarkdownIt: (md: markdownit) => {
       md.renderer.rules.html_inline = htmlRule;
+      md.renderer.rules.html_block = htmlRule;
 
       return [
         markdownItWikilinkEmbed,
