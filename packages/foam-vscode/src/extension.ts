@@ -170,23 +170,13 @@ class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvider {
 
     const targetFsPath = workspaceFolder + targetRelPath;
     const targetFsPathUri = vscode.Uri.file(targetFsPath);
-    //const contents = await vscode.workspace.fs.readFile(filePathUri);
     await vscode.workspace.fs.copy(filePathUri, targetFsPathUri, {
       overwrite: true
     });
 
-    let additionalEdit = new vscode.WorkspaceEdit();
-    // additionalEdit.createFile(targetFsPathUri, {
-    //   overwrite: true,
-    //   contents: contents
-    // });
-
     const altText = fileNameWithoutExtension;
-    const startPos = new vscode.Position(position.line, position.character + 2);
-    const endPos = new vscode.Position(position.line, startPos.character + altText.length);
     const text = new vscode.SnippetString("![${1:" + altText + "}]("+ targetRelPath + ")");
     let ret: vscode.DocumentDropEdit = new vscode.DocumentDropEdit(text);
-    ret.additionalEdit = additionalEdit;
     return ret;
   }
 }
