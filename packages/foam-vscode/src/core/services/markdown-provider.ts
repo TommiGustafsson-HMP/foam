@@ -145,13 +145,15 @@ export class MarkdownResourceProvider implements ResourceProvider {
       }
       case 'link': {
         // force ambiguous links to be treated as relative
-        const path = target;
-        // const path =
-        //   target.startsWith('/') ||
-        //   target.startsWith('./') ||
-        //   target.startsWith('../')
-        //     ? target
-        //     : './' + target;
+        let path = target;
+        if (!isGollum) {
+          path =
+            target.startsWith('/') ||
+            target.startsWith('./') ||
+            target.startsWith('../')
+              ? target
+              : './' + target;
+        }
         targetUri =
           workspace.find(path, resource.uri)?.uri ??
           URI.placeholder(resource.uri.resolve(path).path);
