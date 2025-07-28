@@ -17,6 +17,12 @@ import { VsCodeWatcher } from './services/watcher';
 import { createMarkdownParser } from './core/services/markdown-parser';
 import VsCodeBasedParserCache from './services/cache';
 import { createMatcherAndDataStore } from './services/editor';
+import * as vscode from 'vscode';
+import * as path from 'path';
+import { config } from 'process';
+import { getFoamVsCodeConfig } from './services/config';
+import { add } from 'lodash';
+import { start } from 'repl';
 
 export async function activate(context: ExtensionContext) {
   const logger = new VsCodeOutputLogger();
@@ -103,6 +109,16 @@ export async function activate(context: ExtensionContext) {
       })
     );
 
+    const useCustomFileDropdownProvider = getFoamVsCodeConfig('use-custom-file-dropdown-provider');
+    if (useCustomFileDropdownProvider) {
+      context.subscriptions.push(
+        vscode.languages.registerDocumentDropEditProvider(
+          { language: 'markdown' },
+          new CustomMarkdownDropProvider()
+        )
+      );
+    }
+
     const feats = (await Promise.all(featuresPromises)).filter(r => r != null);
 
     return {
@@ -118,5 +134,59 @@ export async function activate(context: ExtensionContext) {
     window.showErrorMessage(
       `An error occurred while bootstrapping Foam. ${e.stack}`
     );
+  }
+}
+
+class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvider {
+  async provideDocumentDropEdits(
+    document: vscode.TextDocument,
+    position: vscode.Position,
+    dataTransfer: vscode.DataTransfer,
+    token: vscode.CancellationToken
+  ): Promise<vscode.DocumentDropEdit | undefined> {
+    const fileUri = dataTransfer.get("text/uri-list").value;
+    const filePathUri = vscode.Uri.parse(fileUri);
+    const workspaceFolder = vscode.workspace.workspaceFolders[0];
+    const documentRelPath = path.relative(workspaceFolder.uri.fsPath, document.uri.fsPath).replace(/\\/g, "/");
+    const documentLastIndexOfSlash = documentRelPath.lastIndexOf('/');
+    const documentRelativeDirectory = documentLastIndexOfSlash >= 0 ? documentRelPath.substring(0, documentLastIndexOfSlash) : "";
+    const documentName = path.basename(documentRelPath);
+    const documentNameDotIndex = documentName.indexOf('.', 1); 
+    const documentNameWithoutExtension = documentNameDotIndex > 1 ? documentName.substring(0, documentNameDotIndex) : documentName; 
+    const fileName = path.basename(filePathUri.fsPath);
+    const fileNameDotIndex = fileName.indexOf('.', 1); 
+    const fileNameWithoutExtension = fileNameDotIndex > 1 ? fileName.substring(0, fileNameDotIndex) : fileName; 
+    
+    let documentAndFileRelativeDirectory = documentNameWithoutExtension;
+    if (documentRelativeDirectory.length > 0) {
+      documentAndFileRelativeDirectory = documentRelativeDirectory + "/" + documentNameWithoutExtension;
+    }
+
+    let targetRelPath = "/uploads/";
+    if (documentAndFileRelativeDirectory !== '') {
+      targetRelPath += documentAndFileRelativeDirectory + "/";
+    }
+    targetRelPath += fileName;
+
+    const targetFsPath = workspaceFolder + targetRelPath;
+    const targetFsPathUri = vscode.Uri.file(targetFsPath);
+    //const contents = await vscode.workspace.fs.readFile(filePathUri);
+    await vscode.workspace.fs.copy(filePathUri, targetFsPathUri, {
+      overwrite: true
+    });
+
+    let additionalEdit = new vscode.WorkspaceEdit();
+    // additionalEdit.createFile(targetFsPathUri, {
+    //   overwrite: true,
+    //   contents: contents
+    // });
+
+    const altText = fileNameWithoutExtension;
+    const startPos = new vscode.Position(position.line, position.character + 2);
+    const endPos = new vscode.Position(position.line, startPos.character + altText.length);
+    const text = new vscode.SnippetString("![${1:" + altText + "}]("+ targetRelPath + ")");
+    let ret: vscode.DocumentDropEdit = new vscode.DocumentDropEdit(text);
+    ret.additionalEdit = additionalEdit;
+    return ret;
   }
 }

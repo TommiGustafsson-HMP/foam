@@ -38,7 +38,7 @@ export abstract class MarkdownLink {
 
   public static analyzeLink(link: ResourceLink) {
     try {
-        const wikiLinkSyntax = getFoamVsCodeConfig('wikilinks.syntax');
+      const wikiLinkSyntax = getFoamVsCodeConfig('wikilinks.syntax');
       if (link.type === 'wikilink') {
         if (wikiLinkSyntax === 'mediawiki') {
           const [, target, section, alias] = this.wikilinkRegex.exec(

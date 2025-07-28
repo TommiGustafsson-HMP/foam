@@ -2,10 +2,13 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.0.14] - 2025-07-28
+
+- Added a custom file dropdown provider.
+
 ## [1.0.13] - 2025-07-28
 
 - Fix img tag rendering.
-
 
 ## [1.0.12] - 2025-07-28
 

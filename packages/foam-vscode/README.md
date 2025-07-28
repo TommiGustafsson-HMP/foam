@@ -16,7 +16,8 @@ The new settings in this extension and their defaults are:
 
 ```
 "foam.wikilinks.syntax": "gollum",
-"foam.wikilinks.case-insensitive": true
+"foam.wikilinks.case-insensitive": true,
+"foam.use-custom-file-dropdown-provider": true
 ```
 
 The possible values for `"foam.wikilinks.syntax"` are `"gollum"` and `"mediawiki"`.
@@ -67,6 +68,10 @@ When `"foam.wikilinks.case-insensitive"` setting is `true`, wikilink parsing is 
 #### Example
 
 - `[[my page]]` links to `My page.md` but shows as `my page` in the preview.
+
+### 3. Custom File Dropdown Provider
+
+When `"foam.use-custom-file-dropdown-provider"` setting is `true`, Visual Studio Code uses a custom file dropdown provider that places dropped files under `/uploads/` using a special logic. It creates a folder under `/uploads/` based on the current document folder and the current document name. For example, files related to `/Items/Amulets.md` go under `/uploads/Items/Amulets/`.
 
 ## Foam Extension Features
 
