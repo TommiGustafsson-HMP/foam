@@ -168,7 +168,7 @@ class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvider {
     }
     targetRelPath += fileName;
 
-    const targetFsPath = workspaceFolder + targetRelPath;
+    const targetFsPath = workspaceFolder.uri.path + targetRelPath;
     const targetFsPathUri = vscode.Uri.file(targetFsPath);
     await vscode.workspace.fs.copy(filePathUri, targetFsPathUri, {
       overwrite: true
