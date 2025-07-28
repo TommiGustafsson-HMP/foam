@@ -14,10 +14,32 @@ export abstract class MarkdownLink {
     /\[(.*)\]\(<?([^#>]*)?#?([^\]>]+)?>?\)/
   );
 
+  private static convertGollumTarget(target: string) {
+    let isRoot = false;
+    let parentCount = 0;
+
+    if (target.startsWith('/')) {
+      target = target.substring(1);
+      isRoot = true;
+    }
+    if (target.startsWith('./')) {
+      target = target.substring(2);
+    }
+    while (target.startsWith('../')) {
+      target = target.substring(3);
+      parentCount++;
+    }
+    return {
+      target: target,
+      isRoot: isRoot,
+      parentCount: parentCount
+    };
+  }
+
   public static analyzeLink(link: ResourceLink) {
     try {
-      if (link.type === 'wikilink') {
         const wikiLinkSyntax = getFoamVsCodeConfig('wikilinks.syntax');
+      if (link.type === 'wikilink') {
         if (wikiLinkSyntax === 'mediawiki') {
           const [, target, section, alias] = this.wikilinkRegex.exec(
             link.rawText
@@ -39,23 +61,10 @@ export abstract class MarkdownLink {
               alias = '';
           }
 
-          let isRoot = false;
-          let parentCount = 0;
+          let {target: target2, isRoot, parentCount} = this.convertGollumTarget (target);
 
-          if (target.startsWith('/')) {
-            target = target.substring(1);
-            isRoot = true;
-          }
-          if (target.startsWith('./')) {
-            target = target.substring(2);
-          }
-          while (target.startsWith('../')) {
-            target = target.substring(3);
-            parentCount++;
-          }
-        
           return {
-            target: target?.replace(/\\/g, '') ?? '',
+            target: target2?.replace(/\\/g, '') ?? '',
             section: section ?? '',
             alias: alias ?? '',
             isRoot: isRoot,
@@ -64,15 +73,26 @@ export abstract class MarkdownLink {
         }
       }
       if (link.type === 'link') {
-        const [, alias, target, section] = this.directLinkRegex.exec(
+        let [, alias, target, section] = this.directLinkRegex.exec(
           link.rawText
         );
+
+        let isRoot = false;
+        let parentCount = 0;
+
+        if (wikiLinkSyntax === 'gollum') {
+          const retValue = this.convertGollumTarget (target);
+          target = retValue.target;
+          isRoot = retValue.isRoot;
+          parentCount = retValue.parentCount;
+        }
+
         return {
           target: target ?? '',
           section: section ?? '',
           alias: alias ?? '',
-          isRoot: false,
-          parentCount: 0
+          isRoot: isRoot,
+          parentCount: parentCount
         };
       }
       throw new Error(`Link of type ${link.type} is not supported`);
