@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.0.19] - 2025-07-29
+
+- Support for dropping multiple files at once.
+
 ## [1.0.18] - 2025-07-29
 
 - Added support for dropping files from within the current workspace to a Markdown document. In this case, the file will not be copied to a new directory, but a link to the original file location will be established.
