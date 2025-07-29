@@ -2,6 +2,18 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.0.17] - 2025-07-29
+
+- Added proper support for URI encoding and decoding.
+
+## [1.0.16] - 2025-07-28
+
+- Fix spaces in image paths.
+
+## [1.0.15] - 2025-07-28
+
+- Fixed file copying.
+
 ## [1.0.14] - 2025-07-28
 
 - Added a custom file dropdown provider.

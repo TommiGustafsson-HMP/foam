@@ -81,10 +81,11 @@ export abstract class MarkdownLink {
         let parentCount = 0;
 
         if (wikiLinkSyntax === 'gollum') {
-          const retValue = this.convertGollumTarget (target);
+          const retValue = this.convertGollumTarget(target);
           target = retValue.target;
           isRoot = retValue.isRoot;
           parentCount = retValue.parentCount;
+          target = decodeURI(target);
         }
 
         return {
