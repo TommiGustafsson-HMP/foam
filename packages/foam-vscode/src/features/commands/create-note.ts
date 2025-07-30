@@ -40,11 +40,11 @@ interface CreateNoteArgs {
    * The path of the note to create.
    * If relative it will be resolved against the workspace root.
    */
-  notePath?: string;
+  notePath?: string | URI;
   /**
    * The path of the template to use.
    */
-  templatePath?: string;
+  templatePath?: string | URI;
   /**
    * Whether to ask the user to select a template for the new note. If so, overwrites templatePath.
    */
@@ -61,7 +61,7 @@ interface CreateNoteArgs {
   /**
    * The date used to resolve the FOAM_DATE_* variables. in YYYY-MM-DD format
    */
-  date?: string;
+  date?: string | Date;
   /**
    * The title of the note (translates into the FOAM_TITLE variable)
    */
@@ -91,7 +91,12 @@ const DEFAULT_NEW_NOTE_TEXT = `# \${FOAM_TITLE}
 
 export async function createNote(args: CreateNoteArgs, foam: Foam) {
   args = args ?? {};
-  const date = isSome(args.date) ? new Date(Date.parse(args.date)) : new Date();
+  const date =
+    typeof args.date === 'string'
+      ? new Date(Date.parse(args.date))
+      : args.date instanceof Date
+      ? args.date
+      : new Date();
 
   // Create appropriate trigger based on context
   const trigger = args.sourceLink
@@ -103,18 +108,18 @@ export async function createNote(args: CreateNoteArgs, foam: Foam) {
     : TriggerFactory.createCommandTrigger('foam-vscode.create-note');
 
   // Determine template path
-  let templatePath: string;
+  let templateUri: URI;
   if (args.askForTemplate) {
     const selectedTemplate = await askUserForTemplate();
     if (selectedTemplate) {
-      templatePath = selectedTemplate.toString();
+      templateUri = selectedTemplate;
     } else {
       return;
     }
   } else {
-    templatePath = args.templatePath
-      ? asAbsoluteWorkspaceUri(args.templatePath).toString()
-      : (await getDefaultTemplateUri())?.toString();
+    templateUri = args.templatePath
+      ? asAbsoluteWorkspaceUri(args.templatePath)
+      : await getDefaultTemplateUri();
   }
 
   // Load template using the new system
@@ -122,26 +127,29 @@ export async function createNote(args: CreateNoteArgs, foam: Foam) {
   let template: Template;
 
   try {
-    if (!templatePath) {
+    if (!templateUri) {
       template = {
         type: 'markdown',
         content: args.text || DEFAULT_NEW_NOTE_TEXT,
       };
-    } else if (await fileExists(URI.parse(templatePath))) {
-      template = await templateLoader.loadTemplate(templatePath);
+    } else if (await fileExists(templateUri)) {
+      template = await templateLoader.loadTemplate(templateUri);
     } else {
-      throw new Error(`Template file not found: ${templatePath}`);
+      throw new Error(`Template file not found: ${templateUri}`);
     }
   } catch (error) {
     throw new Error(
-      `Failed to load template (${templatePath}): ${error.message}`
+      `Failed to load template (${templateUri}): ${error.message}`
     );
   }
 
   // If notePath is provided, add it to template metadata to avoid unnecessary title resolution
   if (args.notePath && template.type === 'markdown') {
     template.metadata = template.metadata || new Map();
-    template.metadata.set('filepath', args.notePath);
+    template.metadata.set(
+      'filepath',
+      args.notePath instanceof URI ? args.notePath.toFsPath() : args.notePath
+    );
   }
 
   // Create resolver with all variables upfront
@@ -155,11 +163,6 @@ export async function createNote(args: CreateNoteArgs, foam: Foam) {
     resolver.define('FOAM_TITLE', args.title);
   }
 
-  // Add other parameters as variables
-  if (args.notePath) {
-    resolver.define('notePath', args.notePath);
-  }
-
   // Process template using the new engine with unified resolver
   const engine = new NoteCreationEngine(
     foam,
@@ -167,15 +170,9 @@ export async function createNote(args: CreateNoteArgs, foam: Foam) {
   );
   const result = await engine.processTemplate(trigger, template, resolver);
 
-  // Determine final file path
-  const finalUri = new URI({
-    scheme: workspace.workspaceFolders[0].uri.scheme,
-    path: result.filepath,
-  });
-
   // Create the note using NoteFactory with the same resolver
   const createdNote = await NoteFactory.createNote(
-    finalUri,
+    result.filepath,
     result.content,
     resolver,
     args.onFileExists,

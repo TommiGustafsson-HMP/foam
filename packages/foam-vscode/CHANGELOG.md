@@ -4,6 +4,22 @@ All notable changes to the "foam-vscode" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.27.1] - 2025-07-24
+
+Fixes and Improvements:
+
+- Fixed handling of daily note template on Windows machines (#1492)
+
+## [0.27.0] - 2025-07-23
+
+Features:
+
+- Introduced a unified note creation engine supporting both Markdown and JavaScript templates
+
+Internal:
+
+- Improved testing framework by creating a mocked VS Code environment
+
 ## [0.26.12] - 2025-06-18
 
 Fixes and Improvements:
