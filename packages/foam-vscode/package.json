@@ -4,11 +4,11 @@
   "description": "VS Code + Markdown + Wikilinks for your note taking and knowledge base (Gollum Edition)",
   "private": true,
   "repository": {
-    "url": "https://github.com/TommiGustafsson-HMP/foam",
+    "url": "https://github.com/hyvanmielenpelit/foam-gollum",
     "type": "git"
   },
-  "homepage": "https://github.com/TommiGustafsson-HMP/foam",
-  "version": "1.1.0",
+  "homepage": "https://github.com/hyvanmielenpelit/foam-gollum",
+  "version": "1.1.1",
   "license": "MIT",
   "publisher": "Hyvnmielenpelitry",
   "engines": {

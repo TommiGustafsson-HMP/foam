@@ -1213,10 +1213,15 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@esbuild/win32-x64@0.17.7":
-  version "0.17.7"
-  resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.17.7.tgz"
-  integrity sha512-K9/YybM6WZO71x73Iyab6mwieHtHjm9hrPR/a9FBPZmFO3w+fJaM2uu2rt3JYf/rZR24MFwTliI8VSoKKOtYtg==
+"@esbuild/win32-x64@0.17.19":
+  version "0.17.19"
+  resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.17.19.tgz"
+  integrity sha512-lAhycmKnVOuRYNtRtatQR1LPQf2oYCkRGkSFnseDAKPl8lu5SOsK/e1sXe5a0Pc5kHIHe6P2I/ilntNv2xf3cA==
+
+"@esbuild/win32-x64@0.25.8":
+  version "0.25.8"
+  resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.25.8.tgz"
+  integrity sha512-cn3Yr7+OaaZq1c+2pe+8yxC8E144SReCQjN6/2ynubzYjvyqZjTXfQJpAcQpsdJq3My7XADANiYGHoFC69pLQw==
 
 "@eslint/eslintrc@^1.4.1":
   version "1.4.1"
@@ -4709,33 +4714,65 @@ esbuild-plugin-polyfill-node@^0.3.0:
     "@jspm/core" "^2.0.1"
     import-meta-resolve "^3.0.0"
 
-esbuild@*, esbuild@^0.17.7:
-  version "0.17.7"
-  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.17.7.tgz"
-  integrity sha512-+5hHlrK108fT6C6/40juy0w4DYKtyZ5NjfBlTccBdsFutR7WBxpIY633JzZJewdsCy8xWA/u2z0MSniIJwufYg==
+esbuild@*, esbuild@^0.25.8:
+  version "0.25.8"
+  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.25.8.tgz"
+  integrity sha512-vVC0USHGtMi8+R4Kz8rt6JhEWLxsv9Rnu/lGYbPR8u47B+DCBksq9JarW0zOO7bs37hyOK1l2/oqtbciutL5+Q==
   optionalDependencies:
-    "@esbuild/android-arm" "0.17.7"
-    "@esbuild/android-arm64" "0.17.7"
-    "@esbuild/android-x64" "0.17.7"
-    "@esbuild/darwin-arm64" "0.17.7"
-    "@esbuild/darwin-x64" "0.17.7"
-    "@esbuild/freebsd-arm64" "0.17.7"
-    "@esbuild/freebsd-x64" "0.17.7"
-    "@esbuild/linux-arm" "0.17.7"
-    "@esbuild/linux-arm64" "0.17.7"
-    "@esbuild/linux-ia32" "0.17.7"
-    "@esbuild/linux-loong64" "0.17.7"
-    "@esbuild/linux-mips64el" "0.17.7"
-    "@esbuild/linux-ppc64" "0.17.7"
-    "@esbuild/linux-riscv64" "0.17.7"
-    "@esbuild/linux-s390x" "0.17.7"
-    "@esbuild/linux-x64" "0.17.7"
-    "@esbuild/netbsd-x64" "0.17.7"
-    "@esbuild/openbsd-x64" "0.17.7"
-    "@esbuild/sunos-x64" "0.17.7"
-    "@esbuild/win32-arm64" "0.17.7"
-    "@esbuild/win32-ia32" "0.17.7"
-    "@esbuild/win32-x64" "0.17.7"
+    "@esbuild/aix-ppc64" "0.25.8"
+    "@esbuild/android-arm" "0.25.8"
+    "@esbuild/android-arm64" "0.25.8"
+    "@esbuild/android-x64" "0.25.8"
+    "@esbuild/darwin-arm64" "0.25.8"
+    "@esbuild/darwin-x64" "0.25.8"
+    "@esbuild/freebsd-arm64" "0.25.8"
+    "@esbuild/freebsd-x64" "0.25.8"
+    "@esbuild/linux-arm" "0.25.8"
+    "@esbuild/linux-arm64" "0.25.8"
+    "@esbuild/linux-ia32" "0.25.8"
+    "@esbuild/linux-loong64" "0.25.8"
+    "@esbuild/linux-mips64el" "0.25.8"
+    "@esbuild/linux-ppc64" "0.25.8"
+    "@esbuild/linux-riscv64" "0.25.8"
+    "@esbuild/linux-s390x" "0.25.8"
+    "@esbuild/linux-x64" "0.25.8"
+    "@esbuild/netbsd-arm64" "0.25.8"
+    "@esbuild/netbsd-x64" "0.25.8"
+    "@esbuild/openbsd-arm64" "0.25.8"
+    "@esbuild/openbsd-x64" "0.25.8"
+    "@esbuild/openharmony-arm64" "0.25.8"
+    "@esbuild/sunos-x64" "0.25.8"
+    "@esbuild/win32-arm64" "0.25.8"
+    "@esbuild/win32-ia32" "0.25.8"
+    "@esbuild/win32-x64" "0.25.8"
+
+esbuild@^0.17.7:
+  version "0.17.19"
+  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.17.19.tgz"
+  integrity sha512-XQ0jAPFkK/u3LcVRcvVHQcTIqD6E2H1fvZMA5dQPSOWb3suUbWbfbRf94pjc0bNzRYLfIrDRQXr7X+LHIm5oHw==
+  optionalDependencies:
+    "@esbuild/android-arm" "0.17.19"
+    "@esbuild/android-arm64" "0.17.19"
+    "@esbuild/android-x64" "0.17.19"
+    "@esbuild/darwin-arm64" "0.17.19"
+    "@esbuild/darwin-x64" "0.17.19"
+    "@esbuild/freebsd-arm64" "0.17.19"
+    "@esbuild/freebsd-x64" "0.17.19"
+    "@esbuild/linux-arm" "0.17.19"
+    "@esbuild/linux-arm64" "0.17.19"
+    "@esbuild/linux-ia32" "0.17.19"
+    "@esbuild/linux-loong64" "0.17.19"
+    "@esbuild/linux-mips64el" "0.17.19"
+    "@esbuild/linux-ppc64" "0.17.19"
+    "@esbuild/linux-riscv64" "0.17.19"
+    "@esbuild/linux-s390x" "0.17.19"
+    "@esbuild/linux-x64" "0.17.19"
+    "@esbuild/netbsd-x64" "0.17.19"
+    "@esbuild/openbsd-x64" "0.17.19"
+    "@esbuild/sunos-x64" "0.17.19"
+    "@esbuild/win32-arm64" "0.17.19"
+    "@esbuild/win32-ia32" "0.17.19"
+    "@esbuild/win32-x64" "0.17.19"
 
 escalade@^3.1.1:
   version "3.1.1"
@@ -5325,8 +5362,8 @@ flatted@^3.1.0:
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.2.7.tgz"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
-"foam-vscode-gollum@file:C:\\repos\\Tommi\\foam\\packages\\foam-vscode":
-  version "1.0.21"
+"foam-vscode-gollum@file:C:\\hmp\\foam-gollum\\packages\\foam-vscode":
+  version "1.1.0"
   resolved "file:packages/foam-vscode"
   dependencies:
     dateformat "4.5.1"

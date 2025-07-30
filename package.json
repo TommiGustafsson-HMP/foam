@@ -40,6 +40,7 @@
     "trailingComma": "es5"
   },
   "dependencies": {
-    "dayjs": "^1.11.13"
+    "dayjs": "^1.11.13",
+    "esbuild": "^0.25.8"
   }
 }
