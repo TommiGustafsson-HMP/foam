@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.0.20] - 2025-07-30
+
+- Updated README.md.
+
 ## [1.0.19] - 2025-07-29
 
 - Support for dropping multiple files at once.
