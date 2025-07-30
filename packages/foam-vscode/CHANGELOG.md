@@ -2,7 +2,7 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
-## [1.1.1] - 2025-07-30
+## [1.1.2] - 2025-07-30
 
 - Fixed some bugs.
 
