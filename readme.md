@@ -5,8 +5,9 @@
 Foam for Gollum is a fork of the **Foam** Visual Studio Code extension that supports **Gollum**.
 
 - [Visual Studio Code](https://code.visualstudio.com/) is a code editor from Microsoft.
-- [Foam](https://github.com/foambubble/foam/) is a Visual Studio Code extension that supports Markdown and wikilinks, among other things.
+- [Foam](https://github.com/foambubble/foam/) is a Visual Studio Code extension that supports [Markdown](https://www.markdownguide.org/) and [wikilinks](https://en.wikipedia.org/wiki/Help:Link), among other things.
 - [Gollum](https://github.com/gollum/gollum) is a Git-based wiki software. [GitHub](https://github.com/)'s repository wikis are Gollum-based.
+- Gollum uses [its own flavor of Markdown and wikilinks](https://github.com/gollum/gollum/wiki#tags), which is not supported by the regular Foam extension.
 - [Git](https://git-scm.com/) is a version control system.
 
 You can read more about Foam for Gollum on [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=Hyvnmielenpelitry.foam-vscode-gollum).
