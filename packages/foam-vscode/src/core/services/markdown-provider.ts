@@ -174,23 +174,34 @@ export class MarkdownResourceProvider implements ResourceProvider {
         break;
       }
       case 'link': {
-        // force ambiguous links to be treated as relative
-        let path = target;
-        if (!isGollum) {
+        if (isGollum) {
+          const filePath = this.getFilePathForTarget(target, subdir, isRoot, workspace);
+          const targetResource = workspace.find2(filePath);
+          if (!targetResource) {
+            targetUri = URI.placeholder(target);
+          } else {
+            targetUri = targetResource.uri;
+          }
+          if (section) {
+            targetUri = targetUri.with({ fragment: section });
+          }
+        } else {
+          // force ambiguous links to be treated as relative
+          let path = target;
           path =
             target.startsWith('/') ||
             target.startsWith('./') ||
             target.startsWith('../')
               ? target
               : './' + target;
+          targetUri =
+            workspace.find(path, resource.uri)?.uri ??
+            URI.placeholder(resource.uri.resolve(path).path);
+          if (section && !targetUri.isPlaceholder()) {
+            targetUri = targetUri.with({ fragment: section });
+          }
+          break;
         }
-        targetUri =
-          workspace.find(path, resource.uri)?.uri ??
-          URI.placeholder(resource.uri.resolve(path).path);
-        if (section && !targetUri.isPlaceholder()) {
-          targetUri = targetUri.with({ fragment: section });
-        }
-        break;
       }
     }
     return targetUri;

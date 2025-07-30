@@ -10,7 +10,8 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
     token: vscode.CancellationToken
   ): Promise<vscode.DocumentDropEdit | undefined> {
     const workspaceFolder = vscode.workspace.workspaceFolders[0];
-    const uploadsFolder = path.join(workspaceFolder.uri.path, "uploads").replace(/\\/g, "/") + '/';
+    const uploadsFolder = path.join(workspaceFolder.uri.fsPath, "uploads").replace(/\\/g, "/") + '/';
+    const workspaceFolderPath = workspaceFolder.uri.path + '/';
 
     const files = dataTransfer.get("text/uri-list").value.split(/\r?\n/);
     let text = '';
@@ -33,9 +34,8 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
         documentAndFileRelativeDirectory = documentRelativeDirectory + "/" + documentNameWithoutExtension;
       }
 
-      
       let targetRelPath = '';
-      if(filePathUri.path.startsWith(uploadsFolder)) {
+      if(filePathUri.path.startsWith(workspaceFolderPath)) {
         const fileRelPath = path.relative(workspaceFolder.uri.fsPath, filePathUri.fsPath).replace(/\\/g, "/");
         targetRelPath = '/' + fileRelPath;
       } else {

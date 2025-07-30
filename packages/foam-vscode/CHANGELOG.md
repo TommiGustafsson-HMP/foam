@@ -4,6 +4,10 @@ All notable changes to the "foam-vscode-gollum" extension will be documented in 
 
 ## [1.1.1] - 2025-07-30
 
+- Fixed some bugs.
+
+## [1.1.1] - 2025-07-30
+
 - Updated repository links to [https://github.com/hyvanmielenpelit/foam-gollum](https://github.com/hyvanmielenpelit/foam-gollum).
 
 ## [1.1.0] - 2025-07-30
