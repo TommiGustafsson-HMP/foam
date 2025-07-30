@@ -1,6 +1,7 @@
 import { ResourceLink } from '../model/note';
 import { TextEdit } from './text-edit';
 import { getFoamVsCodeConfig } from '../../services/config';
+import { isPromise } from 'util/types';
 
 export abstract class MarkdownLink {
   private static wikilinkRegex = new RegExp(
@@ -13,11 +14,33 @@ export abstract class MarkdownLink {
     /\[(.*)\]\(<?([^#>]*)?#?([^\]>]+)?>?\)/
   );
 
+  private static convertGollumTarget(target: string) {
+    let isRoot = false;
+    let parentCount = 0;
+
+    if (target.startsWith('/')) {
+      target = target.substring(1);
+      isRoot = true;
+    }
+    if (target.startsWith('./')) {
+      target = target.substring(2);
+    }
+    while (target.startsWith('../')) {
+      target = target.substring(3);
+      parentCount++;
+    }
+    return {
+      target: target,
+      isRoot: isRoot,
+      parentCount: parentCount
+    };
+  }
+
   public static analyzeLink(link: ResourceLink) {
     try {
+      const wikiLinkSyntax = getFoamVsCodeConfig('wikilinks.syntax');
       if (link.type === 'wikilink') {
-        const wikiLinkOrder = getFoamVsCodeConfig('wikilinks.order');
-        if (wikiLinkOrder === 'alias-last') {
+        if (wikiLinkSyntax === 'mediawiki') {
           const [, target, section, alias] = this.wikilinkRegex.exec(
             link.rawText
           );
@@ -27,34 +50,54 @@ export abstract class MarkdownLink {
             alias: alias ?? '',
           };
         }
-        if (wikiLinkOrder === 'alias-first') {
+        if (wikiLinkSyntax === 'gollum') {
           // use Gollum-style syntact
-          const [, alias, target, section] = this.wikilinkRegex2.exec(
+          let [, alias, target, section] = this.wikilinkRegex2.exec(
             link.rawText
           );
+
           if ((target ?? '') === '') {
-            return {
-              target: alias?.replace(/\\/g, '') ?? '',
-              section: section ?? '',
-              alias: '',
-            };
-          } else {
-            return {
-              target: target?.replace(/\\/g, '') ?? '',
-              section: section ?? '',
-              alias: alias ?? '',
-            };
+              target = alias;
+              alias = '';
           }
+
+          let {target: target2, isRoot, parentCount} = this.convertGollumTarget(target);
+
+          return {
+            target: target2?.replace(/\\/g, '') ?? '',
+            section: section ?? '',
+            alias: alias ?? '',
+            isRoot: isRoot,
+            parentCount: parentCount
+          };
         }
       }
       if (link.type === 'link') {
-        const [, alias, target, section] = this.directLinkRegex.exec(
+        let [, alias, target, section] = this.directLinkRegex.exec(
           link.rawText
         );
+
+        let isRoot = false;
+        let parentCount = 0;
+
+        if (wikiLinkSyntax === 'gollum') {
+          const retValue = this.convertGollumTarget(target);
+          target = retValue.target;
+          isRoot = retValue.isRoot;
+          parentCount = retValue.parentCount;
+        }
+
+        const useCustomFileDropdownProvider = getFoamVsCodeConfig('use-custom-file-dropdown-provider');
+        if(useCustomFileDropdownProvider) {
+          target = decodeURI(target);
+        }
+
         return {
           target: target ?? '',
           section: section ?? '',
           alias: alias ?? '',
+          isRoot: isRoot,
+          parentCount: parentCount
         };
       }
       throw new Error(`Link of type ${link.type} is not supported`);

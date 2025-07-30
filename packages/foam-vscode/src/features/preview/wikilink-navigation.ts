@@ -10,6 +10,7 @@ import { Range } from '../../core/model/range';
 import { isEmpty } from 'lodash';
 import { toSlug } from '../../utils/slug';
 import { isNone } from '../../core/utils';
+import { getFoamVsCodeConfig } from '../../services/config';
 
 export const markdownItWikilinkNavigation = (
   md: markdownit,
@@ -42,15 +43,25 @@ export const markdownItWikilinkNavigation = (
           return getPlaceholderLink(label);
         }
 
-        const resourceLabel = isEmpty(alias)
-          ? `${resource.title}${formattedSection}`
-          : alias;
+        const wikiLinkCaseInsensitive = getFoamVsCodeConfig('wikilinks.case-insensitive');
+        let resourceTitle = resource.title;
+        if (wikiLinkCaseInsensitive) {
+          const targetLastIndexOfSlash = target.lastIndexOf('/');
+          const targetWithoutPath = targetLastIndexOfSlash >= 0 ?
+            target.substring(targetLastIndexOfSlash + 1) :
+            target;
+          if (resource.title.toLowerCase() === targetWithoutPath.toLowerCase()) {
+            resourceTitle = targetWithoutPath;
+          }
+        }
+
+        const resourceLabel = isEmpty(alias) ? `${resourceTitle}${formattedSection}` : alias;
         const resourceLink = `/${vscode.workspace.asRelativePath(
           toVsCodeUri(resource.uri),
           false
         )}`;
         return getResourceLink(
-          `${resource.title}${formattedSection}`,
+          `${resourceTitle}${formattedSection}`,
           `${resourceLink}${linkSection}`,
           resourceLabel
         );

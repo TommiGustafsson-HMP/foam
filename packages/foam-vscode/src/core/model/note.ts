@@ -91,4 +91,24 @@ export abstract class Resource {
     }
     return null;
   }
+
+  public static findSection2(resource: Resource, 
+    label: string, convert: boolean): Section | null {
+    if (!convert) {
+      return this.findSection(resource, label);
+    } else if (label) {
+      return resource.sections.find(s => this.convertAnchor(s.label) === label) ?? null;
+    }
+    return null;
+  }
+
+  public static convertAnchor(anchor: string) : string | null {
+    if (anchor) {
+      return anchor.toLowerCase()
+        .normalize("NFKD").replace(/[\u0300-\u036f]/g, "") // remove accents
+        .replace(/[^\w\s-]/g, "") // remove non-word characters (except space and dash)
+        .replace(/\s+/g, "-");    // replace spaces with dashes
+    }
+    return null;    
+  }
 }

@@ -7,6 +7,7 @@ import { ResourceProvider } from './provider';
 import { IDisposable } from '../common/lifecycle';
 import { IDataStore } from '../services/datastore';
 import TrieMap from 'mnemonist/trie-map';
+import { getFoamVsCodeConfig } from '../../services/config';
 
 export class FoamWorkspace implements IDisposable {
   private onDidAddEmitter = new Emitter<Resource>();
@@ -191,6 +192,16 @@ export class FoamWorkspace implements IDisposable {
       };
     }
     return resource ?? null;
+  }
+
+  public find2(reference: string): Resource | null {
+    let id = this.getTrieIdentifier(reference);
+    const resources: Resource[] = [];
+    this._resources.find(id).forEach(elm => resources.push(elm[1]));
+    if (resources.length > 0) {
+      return resources[0];
+    }
+    return null;
   }
 
   public resolveLink(resource: Resource, link: ResourceLink): URI {

@@ -12,6 +12,7 @@ import {
   toVsCodeUri,
 } from '../utils/vsc-utils';
 import { isNone } from '../core/utils';
+import { getFoamVsCodeConfig } from '../services/config';
 
 const AMBIGUOUS_IDENTIFIER_CODE = 'ambiguous-identifier';
 const UNKNOWN_SECTION_CODE = 'unknown-section';
@@ -128,6 +129,9 @@ export function updateDiagnostics(
       document.getText()
     );
 
+    const wikiLinkSyntax = getFoamVsCodeConfig('wikilinks.syntax');
+    const isGollum = wikiLinkSyntax === 'gollum';
+
     for (const link of resource.links) {
       if (link.type === 'wikilink') {
         const { target, section } = MarkdownLink.analyzeLink(link);
@@ -155,7 +159,7 @@ export function updateDiagnostics(
         }
         if (section && targets.length === 1) {
           const resource = targets[0];
-          if (isNone(Resource.findSection(resource, section))) {
+          if (isNone(Resource.findSection2(resource, section, isGollum))) {
             const range = Range.create(
               link.range.start.line,
               link.range.start.character + target.length + 2,

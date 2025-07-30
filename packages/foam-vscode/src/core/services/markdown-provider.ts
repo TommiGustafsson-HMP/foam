@@ -13,6 +13,10 @@ import { ResourceProvider } from '../model/provider';
 import { MarkdownLink } from './markdown-link';
 import { IDataStore } from './datastore';
 import { uniqBy } from 'lodash';
+import { getFoamVsCodeConfig } from '../../services/config';
+import * as vscode from 'vscode';
+import * as path from 'path';
+
 
 export class MarkdownResourceProvider implements ResourceProvider {
   private disposables: IDisposable[] = [];
@@ -47,13 +51,87 @@ export class MarkdownResourceProvider implements ResourceProvider {
     return isSome(content) ? this.parser.parse(uri, content) : null;
   }
 
+  getResourceSubDir(filePath: string, parentCount: number)
+  {
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath));
+    if (!workspaceFolder) {
+        return undefined; // File is not under any workspace folder
+    }
+
+    const relativePath = (path.relative(workspaceFolder.uri.path, filePath) ?? '').replace(/\\/g, '/');
+    let dir: string = relativePath;
+    let dirLastIndexOfSlash = dir.lastIndexOf('/');
+    if (dirLastIndexOfSlash >= 0) {
+      dir = dir.substring(0, dirLastIndexOfSlash);
+    } else {
+      dir = '';
+    }
+
+    let count: number = 0;
+    let parentOverCount: boolean = false;
+    while (count < parentCount) {
+      count++;
+      if (dir === '') {
+        parentOverCount = true;
+        break;
+      }
+      let lastIndexOfSlash = dir.lastIndexOf('/');
+      if (lastIndexOfSlash < 0) {
+        dir = '';
+        if (parentCount > count) {
+          parentOverCount = true;
+        }
+        break;
+      }
+      
+      dir = dir.substring(0, lastIndexOfSlash);
+    }
+
+    if (dir ?? '' !== '') {
+      dir += '/';
+    }
+
+    return { 
+      subdir: dir, 
+      parentOverCount: parentOverCount
+    };
+  }
+
+  getFilePathForTarget(target: string, resourceSubDir: string, isRoot: boolean, workspace: FoamWorkspace)
+  {
+    const workspaceFolder = vscode.workspace.workspaceFolders[0];
+    const workspaceFolderPath = workspaceFolder.uri.fsPath;
+    let filePath = ''; 
+    if(isRoot) {
+      filePath = path.join(workspaceFolderPath, target).replace(/\\/g, "/");
+    } else {
+      filePath = path.join(workspaceFolderPath, resourceSubDir, target).replace(/\\/g, "/");
+    }
+    if((path.extname(filePath) ?? '') === '') {
+      filePath += workspace.defaultExtension;
+    }
+    return filePath;
+  }
+
   resolveLink(
     workspace: FoamWorkspace,
     resource: Resource,
     link: ResourceLink
   ) {
     let targetUri: URI | undefined;
-    const { target, section } = MarkdownLink.analyzeLink(link);
+    const isGollum = getFoamVsCodeConfig('wikilinks.syntax') === 'gollum';
+    let { target, section, alias, isRoot, parentCount } = MarkdownLink.analyzeLink(link);
+    const { subdir, parentOverCount } = this.getResourceSubDir(resource.uri.path, parentCount);
+       
+    if (isGollum) {
+      if (parentOverCount) {
+        return undefined;
+      }
+      if (!isRoot && (subdir ?? '').length > 0) {
+        target = subdir + target;
+      }
+    }
+    
     switch (link.type) {
       case 'wikilink': {
         let definitionUri = undefined;
@@ -69,26 +147,43 @@ export class MarkdownResourceProvider implements ResourceProvider {
             workspace.find(definedUri, resource.uri)?.uri ??
             URI.placeholder(definedUri.path);
         } else {
-          targetUri =
-            target === ''
-              ? resource.uri
-              : workspace.find(target, resource.uri)?.uri ??
+          if (isGollum) {
+            if (target === '') {
+              targetUri = resource.uri;
+            } else {
+              const filePath = this.getFilePathForTarget(target, subdir, isRoot, workspace);
+              const targetResource = workspace.find2(filePath);
+              if (!targetResource) {
+                targetUri = URI.placeholder(target);
+              } else {
+                targetUri = targetResource.uri;
+              }
+            }
+            if (section) {
+              targetUri = targetUri.with({ fragment: section });
+            }
+          } else {
+            targetUri = target === '' ? resource.uri : 
+              workspace.find(target, resource.uri)?.uri ??
                 URI.placeholder(target);
-
-          if (section) {
-            targetUri = targetUri.with({ fragment: section });
+            if (section) {
+              targetUri = targetUri.with({ fragment: section });
+            }
           }
         }
         break;
       }
       case 'link': {
         // force ambiguous links to be treated as relative
-        const path =
-          target.startsWith('/') ||
-          target.startsWith('./') ||
-          target.startsWith('../')
-            ? target
-            : './' + target;
+        let path = target;
+        if (!isGollum) {
+          path =
+            target.startsWith('/') ||
+            target.startsWith('./') ||
+            target.startsWith('../')
+              ? target
+              : './' + target;
+        }
         targetUri =
           workspace.find(path, resource.uri)?.uri ??
           URI.placeholder(resource.uri.resolve(path).path);

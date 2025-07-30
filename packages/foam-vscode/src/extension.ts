@@ -17,6 +17,13 @@ import { VsCodeWatcher } from './services/watcher';
 import { createMarkdownParser } from './core/services/markdown-parser';
 import VsCodeBasedParserCache from './services/cache';
 import { createMatcherAndDataStore } from './services/editor';
+import * as vscode from 'vscode';
+import * as path from 'path';
+import { config } from 'process';
+import { getFoamVsCodeConfig } from './services/config';
+import { add } from 'lodash';
+import { start } from 'repl';
+import { CustomMarkdownDropProvider } from './core/services/markdown-drop-provider';
 
 export async function activate(context: ExtensionContext) {
   const logger = new VsCodeOutputLogger();
@@ -102,6 +109,16 @@ export async function activate(context: ExtensionContext) {
         }
       })
     );
+
+    const useCustomFileDropdownProvider = getFoamVsCodeConfig('use-custom-file-dropdown-provider');
+    if (useCustomFileDropdownProvider) {
+      context.subscriptions.push(
+        vscode.languages.registerDocumentDropEditProvider(
+          { language: 'markdown' },
+          new CustomMarkdownDropProvider()
+        )
+      );
+    }
 
     const feats = (await Promise.all(featuresPromises)).filter(r => r != null);
 

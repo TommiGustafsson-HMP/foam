@@ -1,20 +1,20 @@
 {
-  "name": "foam-vscode",
-  "displayName": "Foam",
-  "description": "VS Code + Markdown + Wikilinks for your note taking and knowledge base",
+  "name": "foam-vscode-gollum",
+  "displayName": "Foam for Gollum",
+  "description": "VS Code + Markdown + Wikilinks for your note taking and knowledge base (Gollum Edition)",
   "private": true,
   "repository": {
-    "url": "https://github.com/foambubble/foam",
+    "url": "https://github.com/TommiGustafsson-HMP/foam",
     "type": "git"
   },
-  "homepage": "https://github.com/foambubble/foam",
-  "version": "0.27.2",
+  "homepage": "https://github.com/TommiGustafsson-HMP/foam",
+  "version": "1.0.21",
   "license": "MIT",
-  "publisher": "foam",
+  "publisher": "Hyvnmielenpelitry",
   "engines": {
     "vscode": "^1.96.0"
   },
-  "icon": "assets/icon/FOAM_ICON_256.png",
+  "icon": "assets/icon/FOAM_FOR_GOLLUM_ICON_256.png",
   "categories": [
     "Other"
   ],
@@ -653,17 +653,25 @@
           "description": "Custom graph styling settings. An example is present in the documentation.",
           "default": {}
         },
-        "foam.wikilinks.order": {
+        "foam.wikilinks.syntax": {
           "type": "string",
-          "default": "alias-last",
+          "default": "gollum",
           "enum": [
-            "alias-first",
-            "alias-last"
+            "gollum",
+            "mediawiki"
           ],
           "enumDescriptions": [
             "Wiki links as [[Alias|Page Name]]",
             "Wiki links as [[Page Name|Alias]]"
           ]
+        },
+        "foam.wikilinks.case-insensitive": {
+          "type": "boolean",
+          "default": true
+        },
+        "foam.use-custom-file-dropdown-provider": {
+          "type": "boolean",
+          "default": true
         }
       }
     },
@@ -692,7 +700,7 @@
     "test:e2e": "yarn test-setup && node ./out/test/run-tests.js --e2e",
     "lint": "dts lint src",
     "clean": "rimraf out",
-    "watch": "nodemon --watch 'src/**/*.ts' --exec 'yarn build' --ext ts",
+    "watch": "",
     "vscode:start-debugging": "yarn clean && yarn watch",
     "package-extension": "npx @vscode/vsce@3.6.0 package --yarn",
     "install-extension": "code --install-extension ./foam-vscode-$npm_package_version.vsix",

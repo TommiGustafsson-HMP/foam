@@ -1,157 +1,84 @@
-# Foam for VSCode
+# Foam for Gollum
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/foam.foam-vscode)](https://marketplace.visualstudio.com/items?itemName=foam.foam-vscode)
-[![Downloads](https://img.shields.io/visual-studio-marketplace/d/foam.foam-vscode)](https://marketplace.visualstudio.com/items?itemName=foam.foam-vscode)
-[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/foam.foam-vscode?label=VS%20Code%20Installs)](https://marketplace.visualstudio.com/items?itemName=foam.foam-vscode)
-[![Ratings](https://img.shields.io/visual-studio-marketplace/r/foam.foam-vscode)](https://marketplace.visualstudio.com/items?itemName=foam.foam-vscode)
+Foam for Gollum is a fork of the [Foam](https://github.com/foambubble/foam/) extension, which adds support for the **wikilink syntax** that is used in [Markdown](https://www.markdownguide.org/) documents in Gollum-based wikis.
 
-> You can join the Foam Community on the [Foam Discord](https://foambubble.github.io/join-discord/e)
+[Gollum](https://github.com/gollum/gollum) is a wiki software based on the [Git version control system](https://git-scm.com/). For example, [GitHub](https://github.com/)'s repository wikis are based on Gollum and use its syntax.
 
-[Foam](https://foambubble.github.io/foam) is a note-taking tool that lives within VS Code, which means you can pair it with your favorite extensions for a great editing experience.
+**Wikilinks** are page name links in double brackets (`[[Page Name]]`), which are used in wiki pages to link to other wiki pages. The main differences of the Gollum-style wikilinks to the standard wikilink syntax of [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) are:
 
-Foam is open source, and allows you to create a local first, markdown based, personal knowledge base. You can also use it to publish your notes.
+- When a wikilink has an alias, the alias comes first: `[[Alias|Page Name]]`
+- Section headings after a hash (`#`) have a different syntax.
+- Wikilinks are relative to the current document directory and not to the root directory of the wiki.
 
-Foam is also meant to be extensible, so you can integrate with its internals to customize your knowledge base.
+## New Settings
 
-## Features
+The new settings in this extension and their defaults are:
 
-### Graph Visualization
+```
+"foam.wikilinks.syntax": "gollum",
+"foam.wikilinks.case-insensitive": true,
+"foam.use-custom-file-dropdown-provider": true
+```
 
-See how your notes are connected via a [graph](https://foambubble.github.io/foam/user/features/graph-visualization) with the `Foam: Show Graph` command.
+The possible values for `"foam.wikilinks.syntax"` are `"gollum"` and `"mediawiki"`.
 
-![Graph Visualization](./assets/screenshots/feature-show-graph.gif)
+You don't need to specify these settings in Visual Studio Code's settings, if the defaults work for you.
 
-### Link Autocompletion
+In the case you have multiple repositories with different Markdown syntaxes, you can add Foam for Gollum's settings to *workspace settings*, so that they are specific to a repository. For repositories using the MediaWiki syntax, you need to specify:
 
-Foam helps you create the connections between your notes, and your placeholders as well.
+```
+"foam.wikilinks.syntax": "mediawiki",
+"foam.wikilinks.case-insensitive": false,
+"foam.use-custom-file-dropdown-provider": false
+```
 
-![Link Autocompletion](./assets/screenshots/feature-link-autocompletion.gif)
+## New Features in This Extension
 
-### Sync links on file rename
+### 1. Gollum-Style Wikilinks
 
-Foam updates the links to renamed files, so your notes stay consistent.
+This extension adds support for the following Gollum-style wikilink features, when `"foam.wikilinks.syntax"` setting is `"gollum"`.
 
-![Sync links on file rename](./assets/screenshots/feature-link-sync.gif)
+#### 1.1. Alias First in Wikilinks
 
-### Unique identifiers across directories
+Wikilinks with an alias follow the convention `[[Alias|Page Name]]`.
 
-Foam supports files with the same name in multiple directories.
-It will use the minimum identifier required, and even report and help you fix existing ambiguous wikilinks.
+#### 1.2. Section Heading Anchors Follow Gollum Notation
 
-![Unique identifier autocompletion](./assets/screenshots/feature-unique-wikilink-completion.gif)
+Anchors for section headings (`#` + the section heading name in the wikilink) use the Gollum format, which is the following:
 
-![Wikilink diagnostic](./assets/screenshots/feature-wikilink-diagnostics.gif)
+- The text is converted to lower case.
+- Special characters are removed.
+- Spaces are replaced with dashes.
 
-### Link Preview and Navigation
+For example, if you have a section heading `4. My Test Heading`, you should use `#4-my-test-heading` as the anchor in the wikilink.
 
-![Link Preview and Navigation](./assets/screenshots/feature-navigation.gif)
+#### 1.3. Gollum-Style Relative and Absolute Path Support
 
-### Go to definition, Peek References
+In Gollum, wikilinks are **relative to the current document directory** and not to the root of the wiki. If you are working with files in subdirectories, you need to pay attention to the path in wikilinks, since `[[Page Name]]` links to a document in the current subdirectory and not to a document in the root directory of the wiki. To access parent and root directories, you need to use `/` and `../` before the page name in a wikilink.
 
-See where a note is being referenced in your knowledge base.
+This extension adds support for the following notations for wikilinks:
 
-![Go to Definition, Peek References](./assets/screenshots/feature-definition-references.gif)
+| Notation | Description |
+| :------- | :---------- |
+| `[[/My page]]` | A starting slash `/` links to a document in the root directory. |
+| `[[../My page]]` | `../` links to a document in the parent directory. |
+| `[[My subdir/My page]]` | You can add *a subdirectory name and a slash* to link to a *subdirectory under the current document directory*. |
+| `[[/My subdir/My page]]` | You can add *a slash, a subdirectory name and a slash* to link to a *subdirectory under the root directory of the wiki*. |
 
-### Navigation in Preview
+Multiple levels of subdirectories are supported.
 
-Navigate your rendered notes in the VS Code preview panel.
+### 2. Case-Insensitive Wikilinks
 
-![Navigation in Preview](./assets/screenshots/feature-preview-navigation.gif)
+When `"foam.wikilinks.case-insensitive"` setting is `true`, wikilink parsing is case-insensitive.
 
-### Note embed
+#### Example
 
-Embed the content from other notes.
+- `[[my page]]` links to `My page.md` but shows as `my page` in the preview.
 
-![Note Embed](./assets/screenshots/feature-note-embed.gif)
+### 3. Custom File Dropdown Provider
 
-### Support for sections
+When `"foam.use-custom-file-dropdown-provider"` setting is `true`, Visual Studio Code uses a custom file dropdown provider that places dropped files under `/uploads/` using a special logic. It creates a folder under `/uploads/` based on the current document folder and the current document name. For example, files related to `/Items/Amulets.md` go under `/uploads/Items/Amulets/`.
 
-Foam supports autocompletion, navigation, embedding and diagnostics for note sections.
-Just use the standard wiki syntax of `[[resource#Section Title]]`.
+## Foam Extension Features
 
-### Link Alias
-
-Foam supports link aliasing, so you can have a `[[wikilink]]`, or a `[[wikilink|alias]]`.
-
-### Templates
-
-Use [custom templates](https://foambubble.github.io/foam/user/features/note-templates) to have avoid repetitve work on your notes.
-
-![Templates](./assets/screenshots/feature-templates.gif)
-
-### Backlinks Panel
-
-Quickly check which notes are referencing the currently active note.
-See for each occurrence the context in which it lives, as well as a preview of the note.
-
-![Backlinks Panel](./assets/screenshots/feature-backlinks-panel.gif)
-
-### Tag Explorer Panel
-
-Tag your notes and navigate them with the [Tag Explorer](https://foambubble.github.io/foam/user/features/tags).
-Foam also supports hierarchical tags.
-
-![Tag Explorer Panel](./assets/screenshots/feature-tags-panel.gif)
-
-### Orphans and Placeholder Panels
-
-Orphans are note that have no inbound nor outbound links.
-Placeholders are dangling links, or notes without content.
-Keep them under control, and your knowledge base in better state, by using this panel.
-
-![Orphans and Placeholder Panels](./assets/screenshots/feature-placeholder-orphan-panel.gif)
-
-### Syntax highlight
-
-Foam highlights wikilinks and placeholder differently, to help you visualize your knowledge base.
-
-![Syntax Highlight](./assets/screenshots/feature-syntax-highlight.png)
-
-### Daily note
-
-Create a journal with [daily notes](https://foambubble.github.io/foam/user/features/daily-notes).
-
-![Daily Note](./assets/screenshots/feature-daily-note.gif)
-
-### Generate references for your wikilinks
-
-Create markdown [references](https://foambubble.github.io/foam/user/features/link-reference-definitions) for `[[wikilinks]]`, to use your notes in a non-Foam workspace.
-With references you can also make your notes navigable both in GitHub UI as well as GitHub Pages.
-
-![Generate references](./assets/screenshots/feature-definitions-generation.gif)
-
-### Commands
-
-- Explore your knowledge base with the `Foam: Open Random Note` command
-- Access your daily note with the `Foam: Open Daily Note` command
-- Create a new note with the `Foam: Create New Note` command
-  - This becomes very powerful when combined with [note templates](https://foambubble.github.io/foam/user/features/note-templates) and the `Foam: Create New Note from Template` command
-- See your workspace as a connected graph with the `Foam: Show Graph` command
-
-## Recipes
-
-People use Foam in different ways for different use cases, check out the [recipes](https://foambubble.github.io/foam/user/recipes/recipes) page for inspiration!
-
-## Getting started
-
-You really, _really_, **really** should read [Foam documentation](https://foambubble.github.io/foam), but if you can't be bothered, this is how to get started:
-
-1. [Create a GitHub repository from foam-template](https://github.com/foambubble/foam-template/generate). If you want to keep your thoughts to yourself, remember to set the repository private.
-2. Clone the repository and open it in VS Code.
-3. When prompted to install recommended extensions, click **Install all** (or **Show Recommendations** if you want to review and install them one by one).
-
-This will also install `Foam`, but if you already have it installed, that's ok, just make sure you're up to date on the latest version.
-
-## Requirements
-
-High tolerance for alpha-grade software.
-Foam is still a Work in Progress.
-Rest assured it will never lock you in, nor compromise your files, but sometimes some features might break ;)
-
-## Known Issues
-
-See the [issues](https://github.com/foambubble/foam/issues/) on our GitHub repo ;)
-
-## Release Notes
-
-See the [CHANGELOG](CHANGELOG.md).
+Please refer to [Foam documentation](https://github.com/foambubble/foam/) for the full description of the features of the Foam extension.
