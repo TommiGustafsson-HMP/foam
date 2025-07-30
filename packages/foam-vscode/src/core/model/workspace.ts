@@ -194,6 +194,16 @@ export class FoamWorkspace implements IDisposable {
     return resource ?? null;
   }
 
+  public find2(reference: string): Resource | null {
+    let id = this.getTrieIdentifier(reference);
+    const resources: Resource[] = [];
+    this._resources.find(id).forEach(elm => resources.push(elm[1]));
+    if (resources.length > 0) {
+      return resources[0];
+    }
+    return null;
+  }
+
   public resolveLink(resource: Resource, link: ResourceLink): URI {
     for (const provider of this.providers) {
       if (provider.supports(resource.uri)) {

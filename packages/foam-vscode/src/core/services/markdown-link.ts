@@ -61,7 +61,7 @@ export abstract class MarkdownLink {
               alias = '';
           }
 
-          let {target: target2, isRoot, parentCount} = this.convertGollumTarget (target);
+          let {target: target2, isRoot, parentCount} = this.convertGollumTarget(target);
 
           return {
             target: target2?.replace(/\\/g, '') ?? '',

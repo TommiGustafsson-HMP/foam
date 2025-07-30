@@ -24,7 +24,7 @@ The possible values for `"foam.wikilinks.syntax"` are `"gollum"` and `"mediawiki
 
 You don't need to specify these settings in Visual Studio Code's settings, if the defaults work for you.
 
-In the case you have multiple repositories with different Markdown syntaxes, you can add the above settings to *workspace settings*, so that they are specific to a repository. For repositories using the MediaWiki syntax, you need to specify:
+In the case you have multiple repositories with different Markdown syntaxes, you can add Foam for Gollum's settings to *workspace settings*, so that they are specific to a repository. For repositories using the MediaWiki syntax, you need to specify:
 
 ```
 "foam.wikilinks.syntax": "mediawiki",

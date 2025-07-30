@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.0.21] - 2025-07-30
+
+Fixed page lookup being relative to the end of the lookup path so that when looking for `Boots.md`, all files in all subdirectories named `Boots.md` were found. Now it finds the exact path, so lookup for `Boots.md` finds only `Boots.md` in the root directory.
+
 ## [1.0.20] - 2025-07-30
 
 - Updated README.md.

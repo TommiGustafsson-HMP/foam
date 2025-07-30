@@ -97,6 +97,22 @@ export class MarkdownResourceProvider implements ResourceProvider {
     };
   }
 
+  getFilePathForTarget(target: string, resourceSubDir: string, isRoot: boolean, workspace: FoamWorkspace)
+  {
+    const workspaceFolder = vscode.workspace.workspaceFolders[0];
+    const workspaceFolderPath = workspaceFolder.uri.fsPath;
+    let filePath = ''; 
+    if(isRoot) {
+      filePath = path.join(workspaceFolderPath, target).replace(/\\/g, "/");
+    } else {
+      filePath = path.join(workspaceFolderPath, resourceSubDir, target).replace(/\\/g, "/");
+    }
+    if((path.extname(filePath) ?? '') === '') {
+      filePath += workspace.defaultExtension;
+    }
+    return filePath;
+  }
+
   resolveLink(
     workspace: FoamWorkspace,
     resource: Resource,
@@ -105,9 +121,9 @@ export class MarkdownResourceProvider implements ResourceProvider {
     let targetUri: URI | undefined;
     const isGollum = getFoamVsCodeConfig('wikilinks.syntax') === 'gollum';
     let { target, section, alias, isRoot, parentCount } = MarkdownLink.analyzeLink(link);
+    const { subdir, parentOverCount } = this.getResourceSubDir(resource.uri.path, parentCount);
        
     if (isGollum) {
-      const { subdir, parentOverCount } = this.getResourceSubDir(resource.uri.path, parentCount);
       if (parentOverCount) {
         return undefined;
       }
@@ -131,14 +147,28 @@ export class MarkdownResourceProvider implements ResourceProvider {
             workspace.find(definedUri, resource.uri)?.uri ??
             URI.placeholder(definedUri.path);
         } else {
-          targetUri =
-            target === ''
-              ? resource.uri
-              : workspace.find(target, resource.uri)?.uri ??
+          if (isGollum) {
+            if (target === '') {
+              targetUri = resource.uri;
+            } else {
+              const filePath = this.getFilePathForTarget(target, subdir, isRoot, workspace);
+              const targetResource = workspace.find2(filePath);
+              if (!targetResource) {
+                targetUri = URI.placeholder(target);
+              } else {
+                targetUri = targetResource.uri;
+              }
+            }
+            if (section) {
+              targetUri = targetUri.with({ fragment: section });
+            }
+          } else {
+            targetUri = target === '' ? resource.uri : 
+              workspace.find(target, resource.uri)?.uri ??
                 URI.placeholder(target);
-
-          if (section) {
-            targetUri = targetUri.with({ fragment: section });
+            if (section) {
+              targetUri = targetUri.with({ fragment: section });
+            }
           }
         }
         break;
