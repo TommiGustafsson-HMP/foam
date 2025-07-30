@@ -39,5 +39,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "dayjs": "^1.11.13"
+  }
 }

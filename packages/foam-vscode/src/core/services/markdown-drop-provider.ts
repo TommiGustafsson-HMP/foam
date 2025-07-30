@@ -33,6 +33,7 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
         documentAndFileRelativeDirectory = documentRelativeDirectory + "/" + documentNameWithoutExtension;
       }
 
+      
       let targetRelPath = '';
       if(filePathUri.path.startsWith(uploadsFolder)) {
         const fileRelPath = path.relative(workspaceFolder.uri.fsPath, filePathUri.fsPath).replace(/\\/g, "/");
