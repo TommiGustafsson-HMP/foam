@@ -1,6 +1,6 @@
 <img src="packages/foam-vscode/assets/icon/FOAM_FOR_GOLLUM_ICON_256.png" alt="Foam for Gollum" /><br />
 
-# Foam for Gollum Visual Studio Code Extension
+# Foam for Gollum – Visual Studio Code Extension
 
 Foam for Gollum is a fork of the **Foam** Visual Studio Code extension that supports **Gollum**.
 
@@ -11,3 +11,11 @@ Foam for Gollum is a fork of the **Foam** Visual Studio Code extension that supp
 - [Git](https://git-scm.com/) is a version control system.
 
 You can read more about Foam for Gollum on [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=Hyvnmielenpelitry.foam-vscode-gollum).
+
+## Contact
+
+Please use one of the following ways for contacting us:
+
+- [Open an issue](https://github.com/hyvanmielenpelit/foam-gollum/issues).
+- [Start a discussion](https://github.com/hyvanmielenpelit/foam-gollum/discussions).
+- Send an email to [tommi.gustafsson@hyvanmielenpelit.fi](mailto:tommi.gustafsson@hyvanmielenpelit.fi).
