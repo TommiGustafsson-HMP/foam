@@ -93,6 +93,11 @@ export function getResourceLink (title: string, link: string, label: string, lin
     const parsedImageProperties = parseImageProperties(imageProperties);
     let htmlAttributes = '';
     let styles = '';
+    let extraStart = '';
+    let extraEnd = '';
+    let align = '';
+    let float = false;
+
     for (const [key, value] of Object.entries(parsedImageProperties)) {
       if (key === 'height') {
         styles += "max-height:" + value + ";";
@@ -101,17 +106,29 @@ export function getResourceLink (title: string, link: string, label: string, lin
       } else if (key === "alt") {
         htmlAttributes += 'alt="' + value + '" ';
       } else if (key === "frame") {
-        htmlAttributes += 'class="' + value + '" ';
+        extraStart += '<span style="display:inline-block;padding:7px; margin:13px 0 0; overflow:hidden; border:1px solid #d0d7de;">';
+        extraEnd += '</span>';
       } else if (key === "align") {
-        htmlAttributes += 'align="' + value + '" ';
+        align = value.toString();
       } else if (key === "float") {
-        styles += 'float:' + value + ';';
+        float = true;
+      }
+    }
+    if (float) {
+      if (align.length > 0) {
+        styles += 'float:' + align + ';';
+      } else {
+        styles += 'float:left;';
+      }
+    } else {
+      if (align.length > 0) {
+        htmlAttributes += 'align="' +align + '" ';
       }
     }
     if(styles.length > 0) {
       htmlAttributes += 'style="' + styles + '"';
     }
-    return `<img class="foam-note-image" alt="${title}" src="${encodedLink}" ${htmlAttributes} />`;
+    return `${extraStart}<img class="foam-note-image" alt="${title}" src="${encodedLink}" ${htmlAttributes} />${extraEnd}`;
   } else {
     return `<a class='foam-note-link' title="${title}" href="${link}" data-href="${link}">${label}</a>`;
   }
@@ -126,9 +143,14 @@ export function parseImageProperties(imageProperties: string) {
 
   let splitProperties = imageProperties.split(/\s*\,\s*/);
   for (const prop of splitProperties) {
-    let splitProp = prop.split(/\s*\=\s*/);
-    if(splitProp.length == 2) {
-      returnValue[splitProp[0].trim()] = splitProp[1].trim();
+    const indexOfEquals = prop.indexOf('=');
+    if(indexOfEquals > 0) {
+      let splitProp = prop.split(/\s*\=\s*/);
+      if(splitProp.length == 2) {
+        returnValue[splitProp[0].trim()] = splitProp[1].trim();
+      }
+    } else {
+      returnValue[prop] = null;
     }
   }
 
