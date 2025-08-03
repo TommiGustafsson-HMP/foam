@@ -11,6 +11,7 @@ import { isEmpty } from 'lodash';
 import { toSlug } from '../../utils/slug';
 import { isNone } from '../../core/utils';
 import { getFoamVsCodeConfig } from '../../services/config';
+import { getResourceSubDir } from  '../../core/services/markdown-provider';
 
 export const markdownItWikilinkNavigation = (
   md: markdownit,
@@ -21,12 +22,13 @@ export const markdownItWikilinkNavigation = (
     regex: /(?=[^!])\[\[([^[\]]+?)\]\]/,
     replace: (wikilink: string) => {
       try {
-        const { target, section, alias } = MarkdownLink.analyzeLink({
+        const { target, section, alias, isRoot, parentCount, imageProperties, linkType } = MarkdownLink.analyzeLink({
           rawText: '[[' + wikilink + ']]',
           type: 'wikilink',
           range: Range.create(0, 0),
           isEmbed: false,
         });
+
         const formattedSection = section ? `#${section}` : '';
         const linkSection = section ? `#${toSlug(section)}` : '';
         const label = isEmpty(alias) ? `${target}${formattedSection}` : alias;
@@ -35,7 +37,7 @@ export const markdownItWikilinkNavigation = (
         if (target.length === 0) {
           // we don't have a good way to check if the section exists within the
           // open file, so we just create a regular link for it
-          return getResourceLink(section, linkSection, label);
+          return getResourceLink(section, linkSection, label, linkType, isRoot, imageProperties);
         }
 
         const resource = workspace.find(target);
@@ -63,7 +65,10 @@ export const markdownItWikilinkNavigation = (
         return getResourceLink(
           `${resourceTitle}${formattedSection}`,
           `${resourceLink}${linkSection}`,
-          resourceLabel
+          resourceLabel,
+          linkType,
+          isRoot,
+          imageProperties
         );
       } catch (e) {
         Logger.error(
@@ -79,7 +84,56 @@ export const markdownItWikilinkNavigation = (
 const getPlaceholderLink = (content: string) =>
   `<a class='foam-placeholder-link' title="Link to non-existing resource" href="javascript:void(0);">${content}</a>`;
 
-const getResourceLink = (title: string, link: string, label: string) =>
-  `<a class='foam-note-link' title='${title}' href='${link}' data-href='${link}'>${label}</a>`;
+export function getResourceLink (title: string, link: string, label: string, linkType: string, isRoot: boolean, imageProperties: string): string {
+  if (linkType === 'image') {
+    const workspaceFolder = vscode.workspace.workspaceFolders[0];
+    const vsCodePath = "https://file+.vscode-resource.vscode-cdn.net" + workspaceFolder.uri.path;
+    const finalLink = vsCodePath + (isRoot ? link : link);
+    const encodedLink = encodeURI(finalLink);
+    const parsedImageProperties = parseImageProperties(imageProperties);
+    let htmlAttributes = '';
+    let styles = '';
+    for (const [key, value] of Object.entries(parsedImageProperties)) {
+      if (key === 'height') {
+        styles += "max-height:" + value + ";";
+      } else if (key === 'width') {
+        styles += "max-width:" + value + ";";
+      } else if (key === "alt") {
+        htmlAttributes += 'alt="' + value + '" ';
+      } else if (key === "frame") {
+        htmlAttributes += 'class="' + value + '" ';
+      } else if (key === "align") {
+        htmlAttributes += 'align="' + value + '" ';
+      } else if (key === "float") {
+        styles += 'float:' + value + ';';
+      }
+    }
+    if(styles.length > 0) {
+      htmlAttributes += 'style="' + styles + '"';
+    }
+    return `<img class="foam-note-image" alt="${title}" src="${encodedLink}" ${htmlAttributes} />`;
+  } else {
+    return `<a class='foam-note-link' title="${title}" href="${link}" data-href="${link}">${label}</a>`;
+  }
+}
+
+export function parseImageProperties(imageProperties: string) {
+  let returnValue = {};
+
+  if ((imageProperties ?? '') === '') {
+    return returnValue;
+  }
+
+  let splitProperties = imageProperties.split(/\s*\,\s*/);
+  for (const prop of splitProperties) {
+    let splitProp = prop.split(/\s*\=\s*/);
+    if(splitProp.length == 2) {
+      returnValue[splitProp[0].trim()] = splitProp[1].trim();
+    }
+  }
+
+  return returnValue;
+}
 
 export default markdownItWikilinkNavigation;
+

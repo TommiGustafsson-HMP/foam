@@ -2,6 +2,14 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.1.3] - 2025-08-03
+
+- Added support for Gollum-style image and file links: `[Image Url|alt=text, width=64px, height=64px]`.
+- Added new settings and their defaults:
+    - "foam.file-dropdown.uploads-folder-name": "uploads"
+    - "foam.file-dropdown.file-template-format": "markdown"
+    - "foam.file-dropdown.image-template-format": "markdown"
+
 ## [1.1.2] - 2025-07-30
 
 - Fixed some bugs.

@@ -8,7 +8,7 @@
     "type": "git"
   },
   "homepage": "https://github.com/hyvanmielenpelit/foam-gollum",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "license": "MIT",
   "publisher": "Hyvnmielenpelitry",
   "engines": {
@@ -673,7 +673,11 @@
           "type": "boolean",
           "default": true
         }, 
-        "foam.file-dropdown.file-template-format": {
+        "foam.file-dropdown.uploads-folder-name": {
+          "type": "string",
+          "default": "uploads"
+        }, 
+          "foam.file-dropdown.file-template-format": {
           "type": "string",
           "default": "markdown",
           "enum": [
@@ -684,7 +688,7 @@
           "enumDescriptions": [
             "File links as ![Text](Path)",
             "File links using a HTML tag",
-            "File links as [[Page Name|Alias]]"
+            "File links as [[File Path]]"
           ]
         },
         "foam.file-dropdown.image-template-format": {
@@ -698,7 +702,7 @@
           "enumDescriptions": [
             "Image links as ![Text](Path)",
             "Image links using img HTML tag",
-            "File links as [[Page Name|Alias]]"
+            "Image links  links as [[Image URL|alt=text]]"
           ]
         }
       }

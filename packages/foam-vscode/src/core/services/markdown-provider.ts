@@ -51,52 +51,6 @@ export class MarkdownResourceProvider implements ResourceProvider {
     return isSome(content) ? this.parser.parse(uri, content) : null;
   }
 
-  getResourceSubDir(filePath: string, parentCount: number)
-  {
-    const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath));
-    if (!workspaceFolder) {
-        return undefined; // File is not under any workspace folder
-    }
-
-    const relativePath = (path.relative(workspaceFolder.uri.path, filePath) ?? '').replace(/\\/g, '/');
-    let dir: string = relativePath;
-    let dirLastIndexOfSlash = dir.lastIndexOf('/');
-    if (dirLastIndexOfSlash >= 0) {
-      dir = dir.substring(0, dirLastIndexOfSlash);
-    } else {
-      dir = '';
-    }
-
-    let count: number = 0;
-    let parentOverCount: boolean = false;
-    while (count < parentCount) {
-      count++;
-      if (dir === '') {
-        parentOverCount = true;
-        break;
-      }
-      let lastIndexOfSlash = dir.lastIndexOf('/');
-      if (lastIndexOfSlash < 0) {
-        dir = '';
-        if (parentCount > count) {
-          parentOverCount = true;
-        }
-        break;
-      }
-      
-      dir = dir.substring(0, lastIndexOfSlash);
-    }
-
-    if (dir ?? '' !== '') {
-      dir += '/';
-    }
-
-    return { 
-      subdir: dir, 
-      parentOverCount: parentOverCount
-    };
-  }
-
   getFilePathForTarget(target: string, resourceSubDir: string, isRoot: boolean, workspace: FoamWorkspace)
   {
     const workspaceFolder = vscode.workspace.workspaceFolders[0];
@@ -120,8 +74,8 @@ export class MarkdownResourceProvider implements ResourceProvider {
   ) {
     let targetUri: URI | undefined;
     const isGollum = getFoamVsCodeConfig('wikilinks.syntax') === 'gollum';
-    let { target, section, alias, isRoot, parentCount } = MarkdownLink.analyzeLink(link);
-    const { subdir, parentOverCount } = this.getResourceSubDir(resource.uri.path, parentCount);
+    let { target, section, alias, isRoot, parentCount, imageProperties } = MarkdownLink.analyzeLink(link);
+    const { subdir, parentOverCount } = getResourceSubDir(resource.uri.path, parentCount);
        
     if (isGollum) {
       if (parentOverCount) {
@@ -264,4 +218,49 @@ export function createMarkdownReferences(
     .filter(isSome)
     .sort();
   return uniqBy(definitions, def => NoteLinkDefinition.format(def));
+}
+
+export function getResourceSubDir(filePath: string, parentCount: number) {
+  const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath));
+  if (!workspaceFolder) {
+      return undefined; // File is not under any workspace folder
+  }
+
+  const relativePath = (path.relative(workspaceFolder.uri.path, filePath) ?? '').replace(/\\/g, '/');
+  let dir: string = relativePath;
+  let dirLastIndexOfSlash = dir.lastIndexOf('/');
+  if (dirLastIndexOfSlash >= 0) {
+    dir = dir.substring(0, dirLastIndexOfSlash);
+  } else {
+    dir = '';
+  }
+
+  let count: number = 0;
+  let parentOverCount: boolean = false;
+  while (count < parentCount) {
+    count++;
+    if (dir === '') {
+      parentOverCount = true;
+      break;
+    }
+    let lastIndexOfSlash = dir.lastIndexOf('/');
+    if (lastIndexOfSlash < 0) {
+      dir = '';
+      if (parentCount > count) {
+        parentOverCount = true;
+      }
+      break;
+    }
+    
+    dir = dir.substring(0, lastIndexOfSlash);
+  }
+
+  if (dir ?? '' !== '') {
+    dir += '/';
+  }
+
+  return { 
+    subdir: dir, 
+    parentOverCount: parentOverCount
+  };
 }

@@ -5363,7 +5363,7 @@ flatted@^3.1.0:
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
 "foam-vscode-gollum@file:C:\\hmp\\foam-gollum\\packages\\foam-vscode":
-  version "1.1.0"
+  version "1.1.2"
   resolved "file:packages/foam-vscode"
   dependencies:
     dateformat "4.5.1"
@@ -6169,6 +6169,11 @@ ignore@^5.0.4, ignore@^5.1.1, ignore@^5.2.0:
   version "5.2.4"
   resolved "https://registry.npmjs.org/ignore/-/ignore-5.2.4.tgz"
   integrity sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==
+
+image-size@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/image-size/-/image-size-2.0.2.tgz"
+  integrity sha512-IRqXKlaXwgSMAMtpNzZa1ZAe8m+Sa1770Dhk8VkSsP9LS+iHD62Zd8FQKs8fbPiagBE7BzoFX23cxFnwshpV6w==
 
 import-fresh@^3.0.0, import-fresh@^3.2.1:
   version "3.3.0"

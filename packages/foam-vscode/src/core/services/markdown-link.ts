@@ -2,6 +2,8 @@ import { ResourceLink } from '../model/note';
 import { TextEdit } from './text-edit';
 import { getFoamVsCodeConfig } from '../../services/config';
 import { isPromise } from 'util/types';
+import * as path from 'path';
+import { imageExtensions } from '../../core/services/attachment-provider';
 
 export abstract class MarkdownLink {
   private static wikilinkRegex = new RegExp(
@@ -56,7 +58,19 @@ export abstract class MarkdownLink {
             link.rawText
           );
 
-          if ((target ?? '') === '') {
+          const extension = path.extname(alias) ?? '';
+          let imageProperties = '';
+          let linkType = 'link';
+          if(extension !== '' && imageExtensions.includes(extension)) {
+            //Image link
+            if((target ?? '').length > 0) {
+              imageProperties = target;
+            }
+            target = decodeURI(alias);
+            alias = '';
+            linkType = "image";
+          }
+          else if ((target ?? '') === '') {
               target = alias;
               alias = '';
           }
@@ -68,7 +82,9 @@ export abstract class MarkdownLink {
             section: section ?? '',
             alias: alias ?? '',
             isRoot: isRoot,
-            parentCount: parentCount
+            parentCount: parentCount,
+            imageProperties: imageProperties,
+            linkType: linkType
           };
         }
       }
@@ -97,7 +113,9 @@ export abstract class MarkdownLink {
           section: section ?? '',
           alias: alias ?? '',
           isRoot: isRoot,
-          parentCount: parentCount
+          parentCount: parentCount,
+          imageProperties: '',
+          linkType: 'link'
         };
       }
       throw new Error(`Link of type ${link.type} is not supported`);

@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "dayjs": "^1.11.13",
-    "esbuild": "^0.25.8"
+    "esbuild": "^0.25.8",
+    "image-size": "^2.0.2"
   }
 }

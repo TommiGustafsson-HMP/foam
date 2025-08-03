@@ -3,19 +3,20 @@ import * as path from 'path';
 import * as os from 'os';
 import { getFoamVsCodeConfig } from '../../services/config';
 import { imageExtensions } from '../../core/services/attachment-provider';
+import { imageSize } from 'image-size';
 
 export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvider {
-  async provideDocumentDropEdits(
+   async provideDocumentDropEdits(
     document: vscode.TextDocument,
     position: vscode.Position,
     dataTransfer: vscode.DataTransfer,
     token: vscode.CancellationToken
   ): Promise<vscode.DocumentDropEdit | undefined> {
-    const fileTemplateFormat = getFoamVsCodeConfig("file-dropdown.file-template-format"); 
-    const imageTemplateFormat = getFoamVsCodeConfig("file-dropdown.image-template-format"); 
-
+    const fileTemplateFormat: string = getFoamVsCodeConfig("file-dropdown.file-template-format"); 
+    const imageTemplateFormat: string = getFoamVsCodeConfig("file-dropdown.image-template-format"); 
+    const uploadsFolderName: string = getFoamVsCodeConfig("file-dropdown.uploads-folder-name"); 
+    
     const workspaceFolder = vscode.workspace.workspaceFolders[0];
-    const uploadsFolder = path.join(workspaceFolder.uri.fsPath, "uploads").replace(/\\/g, "/") + '/';
     const workspaceFolderPath = workspaceFolder.uri.path + '/';
 
     const files = dataTransfer.get("text/uri-list").value.split(/\r?\n/);
@@ -46,7 +47,7 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
         const fileRelPath = path.relative(workspaceFolder.uri.fsPath, filePathUri.fsPath).replace(/\\/g, "/");
         targetRelPath = '/' + fileRelPath;
       } else {
-        targetRelPath = "/uploads/";
+        targetRelPath = "/" + uploadsFolderName + "/";
         if (documentAndFileRelativeDirectory !== '') {
           targetRelPath += documentAndFileRelativeDirectory + "/";
         }
@@ -58,22 +59,81 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
           overwrite: true
         });
       }
-      
-      const finalTargetLink = encodeURI(targetRelPath);
-      const altText = fileNameWithoutExtension;
 
-      if (files.length === 1) {
-        text += "![${1:" + altText + "}]("+ finalTargetLink + ")";
-      } else {
-        if (text.length > 0) {
-          text += os.EOL;
-        }
-        text += "![" + altText + "]("+ finalTargetLink + ")";
+      let dimensions = null;
+      if (isImage) {
+        dimensions = await this.readImageDimensions(filePathUri);
       }
+      
+      const altText = fileNameWithoutExtension;
+      const templateFormat = isImage ? imageTemplateFormat : fileTemplateFormat; 
+
+      text += this.getTemplate(targetRelPath, altText, files.length, templateFormat, isImage, dimensions, text === '');
     }
 
     const textSnippet = new vscode.SnippetString(text);
     let ret: vscode.DocumentDropEdit = new vscode.DocumentDropEdit(textSnippet);
     return ret;
+  }
+
+  getTemplate(link: string, altText: string, filesCount: number, templateFormat: string, isImage: boolean, dimensions: {width: number, height: number}, isFirst: boolean) : string {
+    const encodedLink = encodeURI(link);
+    
+    let text: string = '';
+    
+    if (!isFirst) {
+      text += os.EOL;
+    }
+
+    const altText2: string = filesCount === 1 ? '${1:' + altText + '}' : altText;
+
+    if (templateFormat === 'markdown') {
+      text += "![" + altText2 + "]("+ encodedLink + ")";
+    } else if (templateFormat === 'html') {
+      if (isImage) {
+        let imageDimensionsHtml = '';
+        if (dimensions) {
+          if (dimensions.width && dimensions.width > 0) {
+            imageDimensionsHtml += 'width="' + dimensions.width + '" ';
+          }
+          if (dimensions.height && dimensions.height > 0) {
+            imageDimensionsHtml += 'height="' + dimensions.height + '" ';
+          }
+        }
+        text += '<img src="' + encodedLink + '" alt="'+ altText2 + '" ' + imageDimensionsHtml + '/>';
+      } else {
+        text += '<a href="' + encodedLink + '">' + altText2 + '</a>';
+      }
+    } else if (templateFormat === 'gollum') {
+      if (isImage) {
+        let imageDimensionsGollum = '';
+        if (dimensions) {
+          if (dimensions.width && dimensions.width > 0) {
+            imageDimensionsGollum += ', width=' + dimensions.width + 'px';
+          }
+          if (dimensions.height && dimensions.height > 0) {
+            imageDimensionsGollum += ', height=' + dimensions.height + 'px';
+          }
+        }
+        text += '[[' + link + '|alt='+ altText2 + imageDimensionsGollum + ']]';
+      } else {
+        text += '[[' + link + ']]';
+      }
+    }
+
+    return text;
+  }
+
+  async readImageDimensions (uri: vscode.Uri): Promise<{ width: number; height: number } | null> {
+    try {
+        const fileContents = await vscode.workspace.fs.readFile(uri);
+        const dimensions = imageSize(fileContents);
+        if (dimensions.width && dimensions.height) {
+            return { width: dimensions.width, height: dimensions.height };
+        }
+    } catch (err) {
+        console.error('Error reading image dimensions:', err);
+    }
+    return null;
   }
 }

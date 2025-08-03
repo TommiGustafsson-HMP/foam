@@ -17,10 +17,19 @@ The new settings in this extension and their defaults are:
 ```
 "foam.wikilinks.syntax": "gollum",
 "foam.wikilinks.case-insensitive": true,
-"foam.use-custom-file-dropdown-provider": true
+"foam.use-custom-file-dropdown-provider": true,
+"foam.file-dropdown.uploads-folder-name": "uploads",
+"foam.file-dropdown.file-template-format": "markdown",
+"foam.file-dropdown.image-template-format": "markdown"
 ```
 
-The possible values for `"foam.wikilinks.syntax"` are `"gollum"` and `"mediawiki"`.
+The possible values for the settings are:
+
+| Setting | Possible values |
+| :------ | :-------------- |
+| foam.wikilinks.syntax | "gollum", "mediawiki" |
+| foam.file-dropdown.file-template-format | "markdown", "html", "gollum" |
+| foam.file-dropdown.image-template-format | "markdown", "html", "gollum" |
 
 You don't need to specify these settings in Visual Studio Code's settings, if the defaults work for you.
 
@@ -77,7 +86,27 @@ When `"foam.wikilinks.case-insensitive"` setting is `true`, wikilink parsing is 
 
 ### 3. Custom File Dropdown Provider
 
-When `"foam.use-custom-file-dropdown-provider"` setting is `true`, Visual Studio Code uses a custom file dropdown provider that places dropped files under `/uploads/` using a special logic. It creates a folder under `/uploads/` based on the current document folder and the current document name. For example, files related to `/Items/Amulets.md` go under `/uploads/Items/Amulets/`.
+When `"foam.use-custom-file-dropdown-provider"` setting is `true`, Visual Studio Code uses a custom file dropdown provider that places dropped files under `/uploads/` using a special logic (the uploads folder name is customizable via `"foam.file-dropdown.uploads-folder-name"`). It creates a folder under `/uploads/` based on the current document folder and the current document name. For example, files related to `/Items/Amulets.md` go under `/uploads/Items/Amulets/`.
+
+#### 3.1. File Dropdown Template
+
+You can customize file dropdown template with the `foam.file-dropdown.file-template-format` setting.
+
+| Setting Value | Template |
+| :------ | :-------------- |
+| markdown | `![Text](Link)` |
+| html | `<a href="Link">Text</a>` |
+| gollum | `[[Link\|alt=Text]]` |
+
+#### 3.2. Image Dropdown Template
+
+You can customize the image dropdown template with the `foam.file-dropdown.image-template-format` setting.
+
+| Setting Value | Template |
+| :------ | :-------------- |
+| markdown | `![Text](Link)` |
+| html | `<img src="Link" alt="Text" width="Width" height="Height" />` |
+| gollum | `[[Link\|alt=Text, width=Width, height=Height]]` |
 
 ## Foam Extension Features
 
