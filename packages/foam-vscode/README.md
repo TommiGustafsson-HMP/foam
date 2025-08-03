@@ -105,7 +105,7 @@ You can customize file dropdown template with the `foam.file-dropdown.file-templ
 
 <tr>
 <td>markdown</td>
-<td><code>![Text](Link)</code></td>
+<td><code>!&#91;Text&#93;&#40;Link&#41;</code></td>
 </tr>
 
 <tr>
@@ -115,7 +115,7 @@ You can customize file dropdown template with the `foam.file-dropdown.file-templ
 
 <tr>
 <td>gollum</td>
-<td><code>[[Link|alt=Text]]</code></td>
+<td><code>&#91;&#91;Link|alt=Text&#93;&#93;</code></td>
 </tr>
 
 </tbody>
@@ -138,7 +138,7 @@ You can customize the image dropdown template with the `foam.file-dropdown.image
 
 <tr>
 <td>markdown</td>
-<td><code>![Text](Link)</code></td>
+<td><code>!&#91;Text&#93;&#40;Link&#41;</code></td>
 </tr>
 
 <tr>
@@ -148,7 +148,7 @@ You can customize the image dropdown template with the `foam.file-dropdown.image
 
 <tr>
 <td>gollum</td>
-<td><code>[[Link|alt=Text, width=Width, height=Height]]</code></td>
+<td><code>&#91;&#91;Link|alt=Text, width=Width, height=Height&#93;&#93;</code></td>
 </tr>
 
 </tbody>
