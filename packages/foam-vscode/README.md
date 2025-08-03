@@ -92,21 +92,67 @@ When `"foam.use-custom-file-dropdown-provider"` setting is `true`, Visual Studio
 
 You can customize file dropdown template with the `foam.file-dropdown.file-template-format` setting.
 
-| Setting Value | Template |
-| :------ | :-------------- |
-| markdown | `![Text](Link)` |
-| html | `<a href="Link">Text</a>` |
-| gollum | `[[Link\|alt=Text]]` |
+<table>
+
+<thead>
+<tr>
+<th>Setting Value</th>
+<th>Template</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>markdown</td>
+<td><code>![Text](Link)</code></td>
+</tr>
+
+<tr>
+<td>html</td>
+<td><code>&lt;a href="Link"&gt;Text&lt;/a&gt;</code></td>
+</tr>
+
+<tr>
+<td>gollum</td>
+<td><code>[[Link|alt=Text]]</code></td>
+</tr>
+
+</tbody>
+</table>
 
 #### 3.2. Image Dropdown Template
 
 You can customize the image dropdown template with the `foam.file-dropdown.image-template-format` setting.
 
-| Setting Value | Template |
-| :------ | :-------------- |
-| markdown | `![Text](Link)` |
-| html | `<img src="Link" alt="Text" width="Width" height="Height" />` |
-| gollum | `[[Link\|alt=Text, width=Width, height=Height]]` |
+<table>
+
+<thead>
+<tr>
+<th>Setting Value</th>
+<th>Template</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>markdown</td>
+<td><code>![Text](Link)</code></td>
+</tr>
+
+<tr>
+<td>html</td>
+<td><code>&lt;img src="Link" alt="Text" width="Width" height="Height" /&gt;</code></td>
+</tr>
+
+<tr>
+<td>gollum</td>
+<td><code>[[Link|alt=Text, width=Width, height=Height]]</code></td>
+</tr>
+
+</tbody>
+</table>
 
 ## Foam Extension Features
 

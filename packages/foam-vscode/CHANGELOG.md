@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.1.4] - 2025-08-03
+
+- Update README.md.
+
 ## [1.1.3] - 2025-08-03
 
 - Added support for Gollum-style image and file links: `[Image Url|alt=text, width=64px, height=64px]`.
