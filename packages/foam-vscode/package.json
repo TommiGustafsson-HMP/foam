@@ -672,6 +672,34 @@
         "foam.use-custom-file-dropdown-provider": {
           "type": "boolean",
           "default": true
+        }, 
+        "foam.file-dropdown.file-template-format": {
+          "type": "string",
+          "default": "markdown",
+          "enum": [
+            "markdown",
+            "html",
+            "gollum"
+          ],
+          "enumDescriptions": [
+            "File links as ![Text](Path)",
+            "File links using a HTML tag",
+            "File links as [[Page Name|Alias]]"
+          ]
+        },
+        "foam.file-dropdown.image-template-format": {
+          "type": "string",
+          "default": "markdown",
+          "enum": [
+            "markdown",
+            "html",
+            "gollum"
+          ],
+          "enumDescriptions": [
+            "Image links as ![Text](Path)",
+            "Image links using img HTML tag",
+            "File links as [[Page Name|Alias]]"
+          ]
         }
       }
     },

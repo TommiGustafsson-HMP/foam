@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as os from 'os';
+import { getFoamVsCodeConfig } from '../../services/config';
+import { imageExtensions } from '../../core/services/attachment-provider';
 
 export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvider {
   async provideDocumentDropEdits(
@@ -9,6 +11,9 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
     dataTransfer: vscode.DataTransfer,
     token: vscode.CancellationToken
   ): Promise<vscode.DocumentDropEdit | undefined> {
+    const fileTemplateFormat = getFoamVsCodeConfig("file-dropdown.file-template-format"); 
+    const imageTemplateFormat = getFoamVsCodeConfig("file-dropdown.image-template-format"); 
+
     const workspaceFolder = vscode.workspace.workspaceFolders[0];
     const uploadsFolder = path.join(workspaceFolder.uri.fsPath, "uploads").replace(/\\/g, "/") + '/';
     const workspaceFolderPath = workspaceFolder.uri.path + '/';
@@ -21,6 +26,8 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
       const fileName = path.basename(filePathUri.fsPath);
       const fileNameDotIndex = fileName.indexOf('.', 1); 
       const fileNameWithoutExtension = fileNameDotIndex > 0 ? fileName.substring(0, fileNameDotIndex) : fileName; 
+      const fileExtension = fileNameDotIndex > 0 ? fileName.substring(fileNameDotIndex) : '';
+      const isImage = imageExtensions.includes(fileExtension.toLowerCase());
 
       const documentRelPath = path.relative(workspaceFolder.uri.fsPath, document.uri.fsPath).replace(/\\/g, "/");
       const documentLastIndexOfSlash = documentRelPath.lastIndexOf('/');
