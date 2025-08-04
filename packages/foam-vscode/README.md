@@ -105,7 +105,7 @@ You can customize file dropdown template with the `foam.file-dropdown.file-templ
 
 <tr>
 <td>markdown</td>
-<td><code>!&#91;Text&#93;&#40;Link&#41;</code></td>
+<td><code>&#91;Text&#93;&#40;Link&#41;</code></td>
 </tr>
 
 <tr>
@@ -115,7 +115,7 @@ You can customize file dropdown template with the `foam.file-dropdown.file-templ
 
 <tr>
 <td>gollum</td>
-<td><code>&#91;&#91;Link|alt=Text&#93;&#93;</code></td>
+<td><code>&#91;&#91;Text|Link&#93;&#93;</code></td>
 </tr>
 
 </tbody>
