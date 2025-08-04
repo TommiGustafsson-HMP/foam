@@ -86,11 +86,17 @@ When `"foam.wikilinks.case-insensitive"` setting is `true`, wikilink parsing is 
 
 ### 3. Custom File Dropdown Provider
 
-When `"foam.use-custom-file-dropdown-provider"` setting is `true`, Visual Studio Code uses a custom file dropdown provider that places dropped files under `/uploads/` using a special logic (the uploads folder name is customizable via `"foam.file-dropdown.uploads-folder-name"`). It creates a folder under `/uploads/` based on the current document folder and the current document name. For example, files related to `/Items/Amulets.md` go under `/uploads/Items/Amulets/`.
+When the `"foam.use-custom-file-dropdown-provider"` setting is `true`, Visual Studio Code uses a custom file dropdown provider that places dropped files under `/uploads/` using a special logic. It creates a folder under `/uploads/` based on the current document folder and the current document name. For example, files related to `/Items/Amulets.md` will go under `/uploads/Items/Amulets/`.
 
-#### 3.1. File Dropdown Template
+#### 3.1. Uploads Folder Name Customization
 
-You can customize file dropdown template with the `foam.file-dropdown.file-template-format` setting.
+The uploads folder name is customizable via the `"foam.file-dropdown.uploads-folder-name"` setting.
+
+The default value is `"uploads"`.
+
+#### 3.2. File Dropdown Template
+
+You can customize the file dropdown template with the `foam.file-dropdown.file-template-format` setting.
 
 <table>
 
@@ -104,24 +110,24 @@ You can customize file dropdown template with the `foam.file-dropdown.file-templ
 <tbody>
 
 <tr>
-<td>markdown</td>
+<td><code>"markdown"</code></td>
 <td><code>&#91;Text&#93;&#40;Link&#41;</code></td>
 </tr>
 
 <tr>
-<td>html</td>
+<td><code>"html"</code></td>
 <td><code>&lt;a href="Link"&gt;Text&lt;/a&gt;</code></td>
 </tr>
 
 <tr>
-<td>gollum</td>
+<td><code>"gollum"</code></td>
 <td><code>&#91;&#91;Text|Link&#93;&#93;</code></td>
 </tr>
 
 </tbody>
 </table>
 
-#### 3.2. Image Dropdown Template
+#### 3.3. Image Dropdown Template
 
 You can customize the image dropdown template with the `foam.file-dropdown.image-template-format` setting.
 
@@ -137,17 +143,17 @@ You can customize the image dropdown template with the `foam.file-dropdown.image
 <tbody>
 
 <tr>
-<td>markdown</td>
+<td><code>"markdown"</code></td>
 <td><code>!&#91;Text&#93;&#40;Link&#41;</code></td>
 </tr>
 
 <tr>
-<td>html</td>
+<td><code>"html"</code></td>
 <td><code>&lt;img src="Link" alt="Text" width="Width" height="Height" /&gt;</code></td>
 </tr>
 
 <tr>
-<td>gollum</td>
+<td><code>"gollum"</code></td>
 <td><code>&#91;&#91;Link|alt=Text, width=Width, height=Height&#93;&#93;</code></td>
 </tr>
 
