@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as os from 'os';
 import { getFoamVsCodeConfig } from '../../services/config';
 import { imageExtensions } from '../../core/services/attachment-provider';
-import { imageSize } from 'image-size';
+import { imageSizeFromFile } from 'image-size/fromFile';
 
 export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvider {
    async provideDocumentDropEdits(
@@ -126,8 +126,7 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
 
   async readImageDimensions (uri: vscode.Uri): Promise<{ width: number; height: number } | null> {
     try {
-        const fileContents = await vscode.workspace.fs.readFile(uri);
-        const dimensions = imageSize(fileContents);
+        const dimensions = await imageSizeFromFile(uri.fsPath);
         if (dimensions.width && dimensions.height) {
             return { width: dimensions.width, height: dimensions.height };
         }

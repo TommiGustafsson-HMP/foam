@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.1.7] - 2025-08-03
+
+- Changed to read image dimensions from a file.
+
 ## [1.1.6] - 2025-08-03
 
 - Fix align, float, frame in Gollum-style image template.
