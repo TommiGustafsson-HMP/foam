@@ -110,7 +110,7 @@ export async function activate(context: ExtensionContext) {
       })
     );
 
-    const useCustomFileDropdownProvider = getFoamVsCodeConfig('use-custom-file-dropdown-provider');
+    const useCustomFileDropdownProvider = getFoamVsCodeConfig('useCustomFileDropdownProvider');
     if (useCustomFileDropdownProvider) {
       context.subscriptions.push(
         vscode.languages.registerDocumentDropEditProvider(

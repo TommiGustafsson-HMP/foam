@@ -8,7 +8,7 @@
     "type": "git"
   },
   "homepage": "https://github.com/hyvanmielenpelit/foam-gollum",
-  "version": "1.1.11",
+  "version": "1.2.0",
   "license": "MIT",
   "publisher": "Hyvnmielenpelitry",
   "engines": {
@@ -457,7 +457,7 @@
       }
     ],
     "configuration": {
-      "title": "Foam",
+      "title": "Foam for Gollum",
       "properties": {
         "foam.supportedLanguages": {
           "type": "array",
@@ -663,21 +663,25 @@
           "enumDescriptions": [
             "Wiki links as [[Alias|Page Name]]",
             "Wiki links as [[Page Name|Alias]]"
-          ]
+          ],
+          "description": "Syntax used for wikilinks [[Page Name]]."
         },
-        "foam.wikilinks.case-insensitive": {
+        "foam.wikilinks.caseInsensitive": {
           "type": "boolean",
-          "default": true
+          "default": true,
+          "description": "Determines if wikilinks use case-insensitive mapping to wiki pages."
         },
-        "foam.use-custom-file-dropdown-provider": {
+        "foam.useCustomFileDropdownProvider": {
           "type": "boolean",
-          "default": true
+          "default": true,
+          "description": "Determines whether to use custom logic for templating wikilinks from dropped files."
         }, 
-        "foam.file-dropdown.uploads-folder-name": {
+        "foam.fileDropdown.uploadsFolderName": {
           "type": "string",
-          "default": "uploads"
+          "default": "uploads",
+          "description": "The name for the base folder for file uploads."
         }, 
-          "foam.file-dropdown.file-template-format": {
+          "foam.fileDropdown.fileTemplateFormat": {
           "type": "string",
           "default": "markdown",
           "enum": [
@@ -687,11 +691,12 @@
           ],
           "enumDescriptions": [
             "File links as ![Text](Path)",
-            "File links using a HTML tag",
+            "File links using <a> HTML tag",
             "File links as [[File Path]]"
-          ]
+          ],
+          "description": "The template used for files dropped to Markdown documents."
         },
-        "foam.file-dropdown.image-template-format": {
+        "foam.fileDropdown.imageTemplateFormat": {
           "type": "string",
           "default": "markdown",
           "enum": [
@@ -701,9 +706,10 @@
           ],
           "enumDescriptions": [
             "Image links as ![Text](Path)",
-            "Image links using img HTML tag",
+            "Image links using <img> HTML tag",
             "Image links  links as [[Image URL|alt=text]]"
-          ]
+          ],
+          "description": "The template used for images dropped to Markdown documents."
         }
       }
     },

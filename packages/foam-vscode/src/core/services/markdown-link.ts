@@ -103,7 +103,7 @@ export abstract class MarkdownLink {
           parentCount = retValue.parentCount;
         }
 
-        const useCustomFileDropdownProvider = getFoamVsCodeConfig('use-custom-file-dropdown-provider');
+        const useCustomFileDropdownProvider = getFoamVsCodeConfig('useCustomFileDropdownProvider');
         if(useCustomFileDropdownProvider) {
           target = decodeURI(target);
         }

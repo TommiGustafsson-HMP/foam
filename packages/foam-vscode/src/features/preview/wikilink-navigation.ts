@@ -45,7 +45,7 @@ export const markdownItWikilinkNavigation = (
           return getPlaceholderLink(label);
         }
 
-        const wikiLinkCaseInsensitive = getFoamVsCodeConfig('wikilinks.case-insensitive');
+        const wikiLinkCaseInsensitive = getFoamVsCodeConfig('wikilinks.caseInsensitive');
         let resourceTitle = resource.title;
         if (wikiLinkCaseInsensitive) {
           const targetLastIndexOfSlash = target.lastIndexOf('/');

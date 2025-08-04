@@ -16,11 +16,11 @@ The new settings in this extension and their defaults are:
 
 ```
 "foam.wikilinks.syntax": "gollum",
-"foam.wikilinks.case-insensitive": true,
-"foam.use-custom-file-dropdown-provider": true,
-"foam.file-dropdown.uploads-folder-name": "uploads",
-"foam.file-dropdown.file-template-format": "markdown",
-"foam.file-dropdown.image-template-format": "markdown"
+"foam.wikilinks.caseInsensitive": true,
+"foam.useCustomFileDropdownProvider": true,
+"foam.fileDropdown.uploadsFolderName": "uploads",
+"foam.fileDropdown.fileTemplateFormat": "markdown",
+"foam.fileDropdown.imageTemplateFormat": "markdown"
 ```
 
 The possible values for the settings are:
@@ -28,8 +28,8 @@ The possible values for the settings are:
 | Setting | Possible values |
 | :------ | :-------------- |
 | foam.wikilinks.syntax | "gollum", "mediawiki" |
-| foam.file-dropdown.file-template-format | "markdown", "html", "gollum" |
-| foam.file-dropdown.image-template-format | "markdown", "html", "gollum" |
+| foam.fileDropdown.fileTemplateFormat | "markdown", "html", "gollum" |
+| foam.fileDropdown.imageTemplateFormat | "markdown", "html", "gollum" |
 
 You don't need to specify these settings in Visual Studio Code's settings, if the defaults work for you.
 
@@ -37,8 +37,8 @@ In the case you have multiple repositories with different Markdown syntaxes, you
 
 ```
 "foam.wikilinks.syntax": "mediawiki",
-"foam.wikilinks.case-insensitive": false,
-"foam.use-custom-file-dropdown-provider": false
+"foam.wikilinks.caseInsensitive": false,
+"foam.useCustomFileDropdownProvider": false
 ```
 
 ## New Features in This Extension
@@ -78,7 +78,7 @@ Multiple levels of subdirectories are supported.
 
 ### 2. Case-Insensitive Wikilinks
 
-When `"foam.wikilinks.case-insensitive"` setting is `true`, wikilink parsing is case-insensitive.
+When `"foam.wikilinks.caseInsensitive"` setting is `true`, wikilink parsing is case-insensitive.
 
 #### Example
 
@@ -86,17 +86,17 @@ When `"foam.wikilinks.case-insensitive"` setting is `true`, wikilink parsing is 
 
 ### 3. Custom File Dropdown Provider
 
-When the `"foam.use-custom-file-dropdown-provider"` setting is `true`, Visual Studio Code uses a custom file dropdown provider that places dropped files under `/uploads/` using a special logic. It creates a folder under `/uploads/` based on the current document folder and the current document name. For example, files related to `/Items/Amulets.md` will go under `/uploads/Items/Amulets/`.
+When the `"foam.useCustomFileDropdownProvider"` setting is `true`, Visual Studio Code uses a custom file dropdown provider that places dropped files under `/uploads/` using a special logic. It creates a folder under `/uploads/` based on the current document folder and the current document name. For example, files related to `/Items/Amulets.md` will go under `/uploads/Items/Amulets/`.
 
 #### 3.1. Uploads Folder Name Customization
 
-The uploads folder name is customizable via the `"foam.file-dropdown.uploads-folder-name"` setting.
+The uploads folder name is customizable via the `"foam.fileDropdown.uploadsFolderName"` setting.
 
 The default value is `"uploads"`.
 
 #### 3.2. File Dropdown Template
 
-You can customize the file dropdown template with the `foam.file-dropdown.file-template-format` setting.
+You can customize the file dropdown template with the `foam.fileDropdown.fileTemplateFormat` setting.
 
 <table>
 
@@ -129,7 +129,7 @@ You can customize the file dropdown template with the `foam.file-dropdown.file-t
 
 #### 3.3. Image Dropdown Template
 
-You can customize the image dropdown template with the `foam.file-dropdown.image-template-format` setting.
+You can customize the image dropdown template with the `foam.fileDropdown.imageTemplateFormat` setting.
 
 <table>
 

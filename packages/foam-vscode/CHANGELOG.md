@@ -2,6 +2,19 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.2.0] - 2025-08-04
+
+- Changed setting names by removing dashes.
+
+```
+"foam.wikilinks.syntax": "gollum",
+"foam.wikilinks.caseInsensitive": true,
+"foam.useCustomFileDropdownProvider": true,
+"foam.fileDropdown.uploadsFolderName": "uploads",
+"foam.fileDropdown.fileTemplateFormat": "markdown",
+"foam.fileDropdown.imageTemplateFormat": "markdown"
+```
+
 ## [1.1.11] - 2025-08-04
 
 - Update README.md.

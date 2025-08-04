@@ -12,9 +12,9 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
     dataTransfer: vscode.DataTransfer,
     token: vscode.CancellationToken
   ): Promise<vscode.DocumentDropEdit | undefined> {
-    const fileTemplateFormat: string = getFoamVsCodeConfig("file-dropdown.file-template-format"); 
-    const imageTemplateFormat: string = getFoamVsCodeConfig("file-dropdown.image-template-format"); 
-    const uploadsFolderName: string = getFoamVsCodeConfig("file-dropdown.uploads-folder-name"); 
+    const fileTemplateFormat: string = getFoamVsCodeConfig("fileDropdown.fileTemplateFormat"); 
+    const imageTemplateFormat: string = getFoamVsCodeConfig("fileDropdown.imageTemplateFormat"); 
+    const uploadsFolderName: string = getFoamVsCodeConfig("fileDropdown.uploadsFolderName"); 
     
     const workspaceFolder = vscode.workspace.workspaceFolders[0];
     const workspaceFolderPath = workspaceFolder.uri.path + '/';
