@@ -1,6 +1,6 @@
 # Foam for Gollum
 
-Foam for Gollum is a fork of the [Foam](https://github.com/foambubble/foam/) extension, which adds support for the **wikilink syntax** that is used in [Markdown](https://www.markdownguide.org/) documents in Gollum-based wikis.
+Foam for Gollum is a fork of the [Foam](https://marketplace.visualstudio.com/items?itemName=foam.foam-vscode) extension, which adds support for the **wikilink syntax** that is used in [Markdown](https://www.markdownguide.org/) documents in Gollum-based wikis.
 
 [Gollum](https://github.com/gollum/gollum) is a wiki software based on the [Git version control system](https://git-scm.com/). For example, [GitHub](https://github.com/)'s repository wikis are based on Gollum and use its syntax.
 
