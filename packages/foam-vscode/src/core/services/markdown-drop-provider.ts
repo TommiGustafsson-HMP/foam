@@ -88,7 +88,11 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
     const altText2: string = filesCount === 1 ? '${1:' + altText + '}' : altText;
 
     if (templateFormat === 'markdown') {
-      text += "![" + altText2 + "]("+ encodedLink + ")";
+      if (isImage) {
+        text += "![" + altText2 + "]("+ encodedLink + ")";
+      } else {
+        text += "[" + altText2 + "]("+ encodedLink + ")";
+      }
     } else if (templateFormat === 'html') {
       if (isImage) {
         let imageDimensionsHtml = '';
@@ -117,7 +121,7 @@ export class CustomMarkdownDropProvider implements vscode.DocumentDropEditProvid
         }
         text += '[[' + link + '|alt='+ altText2 + imageDimensionsGollum + ']]';
       } else {
-        text += '[[' + link + ']]';
+        text += '[[' + altText2 + '|' + link + ']]';
       }
     }
 

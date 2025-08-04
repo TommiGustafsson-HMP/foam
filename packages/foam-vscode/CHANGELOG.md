@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.1.8] - 2025-08-03
+
+- Fixed file dropdown templates.
+
 ## [1.1.7] - 2025-08-03
 
 - Changed to read image dimensions from a file.
