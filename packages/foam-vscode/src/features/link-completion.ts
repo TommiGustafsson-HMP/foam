@@ -119,16 +119,19 @@ export class SectionCompletionProvider
       position.character
     );
     if (resource) {
+      const wikiLinkSyntax = getFoamVsCodeConfig('wikilinks.syntax');
       const items = resource.sections.map(b => {
+        const anchor = wikiLinkSyntax === "gollum" ? Resource.convertAnchor(b.label) : b.label;  
         const item = new ResourceCompletionItem(
           b.label,
           vscode.CompletionItemKind.Text,
-          resource.uri.with({ fragment: b.label })
+          resource.uri.with({ fragment: anchor })
         );
         item.sortText = String(b.range.start.line).padStart(5, '0');
         item.range = replacementRange;
         item.commitCharacters = sectionCommitCharacters;
         item.command = COMPLETION_CURSOR_MOVE;
+        item.insertText = anchor;
         return item;
       });
       return new vscode.CompletionList(items);
