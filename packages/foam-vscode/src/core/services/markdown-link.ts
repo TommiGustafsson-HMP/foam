@@ -16,7 +16,7 @@ export abstract class MarkdownLink {
     /\[(.*)\]\(<?([^#>]*)?#?([^\]>]+)?>?\)/
   );
 
-  private static convertGollumTarget(target: string) {
+  public static convertGollumTarget(target: string) {
     let isRoot = false;
     let parentCount = 0;
 

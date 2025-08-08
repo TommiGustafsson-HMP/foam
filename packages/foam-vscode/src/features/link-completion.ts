@@ -7,6 +7,11 @@ import { FoamWorkspace } from '../core/model/workspace';
 import { getFoamVsCodeConfig } from '../services/config';
 import { fromVsCodeUri, toVsCodeUri } from '../utils/vsc-utils';
 import { getNoteTooltip, getFoamDocSelectors } from '../services/editor';
+//import { imageExtensions } from '../core/services/attachment-provider';
+import * as path from 'path';
+import { MarkdownLink } from '../core/services/markdown-link'
+import { MarkdownResourceProvider } from '../core/services/markdown-provider';
+import { workspace } from '../test/vscode-mock';
 
 export const aliasCommitCharacters = ['#'];
 export const linkCommitCharacters = ['#', '|'];
@@ -18,6 +23,7 @@ const COMPLETION_CURSOR_MOVE = {
 };
 
 export const WIKILINK_REGEX = /\[\[[^[\]]*(?!.*\]\])/;
+export const GOLLUM_REGEX = /\[\[([^\[|]*)|$/;
 export const SECTION_REGEX = /\[\[([^[\]]*#(?!.*\]\]))/;
 
 export default async function activate(
@@ -29,7 +35,7 @@ export default async function activate(
     vscode.languages.registerCompletionItemProvider(
       getFoamDocSelectors(),
       new WikilinkCompletionProvider(foam.workspace, foam.graph),
-      '['
+      '[', '|'
     ),
     vscode.languages.registerCompletionItemProvider(
       getFoamDocSelectors(),
@@ -107,10 +113,16 @@ export class SectionCompletionProvider
     if (!match) {
       return null;
     }
-
-    const resourceId =
-      match[1] === '#' ? fromVsCodeUri(document.uri) : match[1].slice(0, -1);
-
+    
+    let resourceId: string | URI = null;
+    if(match[1] === '#') {
+      resourceId = fromVsCodeUri(document.uri);
+    } else {
+      const slice =  match[1].slice(0, -1);
+      const indexOfPipe = slice.lastIndexOf('|');
+      resourceId = slice.substring(indexOfPipe + 1);
+    }
+ 
     const resource = this.ws.find(resourceId);
     const replacementRange = new vscode.Range(
       position.line,
@@ -172,15 +184,43 @@ export class WikilinkCompletionProvider
     }
 
     const text = requiresAutocomplete[0];
+    const indexOfPipe = text.indexOf('|');
+    let replacementRange: vscode.Range = null;
 
-    const replacementRange = new vscode.Range(
-      position.line,
-      position.character - (text.length - 2),
-      position.line,
-      position.character
-    );
+    if (indexOfPipe >= 0) {
+      const textBeforePipeMatch = text.match(GOLLUM_REGEX);
+      if (textBeforePipeMatch) {
+        const textBeforePipe = textBeforePipeMatch[1];
+        const lastIndexOfDot = textBeforePipe.lastIndexOf('.');
+        if (lastIndexOfDot > 0) {
+          return null;
+          // const extension = textBeforePipe.substring(lastIndexOfDot).toLowerCase();
+          // if (imageExtensions.includes(extension)) {
+          //   return null;
+          // }
+        }
+      } 
+      const lengthOfTextAfterPipe = text.length - indexOfPipe - 1;
+      replacementRange = new vscode.Range(
+        position.line,
+        position.character - lengthOfTextAfterPipe,
+        position.line,
+        position.character
+      );
+    } else {
+      replacementRange = new vscode.Range(
+        position.line,
+        position.character - (text.length - 2),
+        position.line,
+        position.character
+      );
+    }
     const labelStyle = getCompletionLabelSetting();
     const aliasSetting = getCompletionAliasSetting();
+
+    const isGollum = getFoamVsCodeConfig('wikilinks.syntax') === 'gollum';
+    const documentRelativePath = vscode.workspace.asRelativePath(document.uri);
+    const documentHasSubDir = documentRelativePath.indexOf('/') > 0;
 
     const resources = this.ws.list().map(resource => {
       const resourceIsDocument =
@@ -188,21 +228,34 @@ export class WikilinkCompletionProvider
 
       const identifier = this.ws.getIdentifier(resource.uri);
 
-      const label = !resourceIsDocument
-        ? identifier
-        : labelStyle === 'path'
-        ? vscode.workspace.asRelativePath(toVsCodeUri(resource.uri))
-        : labelStyle === 'title'
-        ? resource.title
-        : identifier;
+      const relativePath = vscode.workspace.asRelativePath(toVsCodeUri(resource.uri));
+      const resourceHasSubDir = relativePath.indexOf('/') > 0;
+      const conditionalRootSlash = (documentHasSubDir || resourceHasSubDir || !resourceIsDocument) ? '/' : '';
+      let absolutePath: string = conditionalRootSlash + relativePath;
+      if (path.extname(absolutePath) === this.ws.defaultExtension) {
+        absolutePath = absolutePath.substring(0, absolutePath.length - this.ws.defaultExtension.length);
+      }
 
+      let label: string = null;
+      if (isGollum) {
+        label = absolutePath;
+      } else {
+        label = !resourceIsDocument
+          ? identifier
+          : labelStyle === 'path'
+          ? relativePath
+          : labelStyle === 'title'
+          ? resource.title
+          : identifier;
+      }
+      
       const item = new ResourceCompletionItem(
         label,
         vscode.CompletionItemKind.File,
         resource.uri
       );
 
-      item.detail = vscode.workspace.asRelativePath(toVsCodeUri(resource.uri));
+      item.detail = absolutePath;
       item.sortText = resourceIsDocument
         ? `0-${item.label}`
         : `1-${item.label}`;
@@ -212,9 +265,17 @@ export class WikilinkCompletionProvider
         aliasSetting !== 'never' &&
         wikilinkRequiresAlias(resource);
 
-      item.insertText = useAlias
-        ? `${identifier}|${resource.title}`
-        : identifier;
+      if (isGollum) {
+        if (useAlias) {
+          item.insertText = `${resource.title}|${absolutePath}`;
+        } else {
+          item.insertText = absolutePath;
+        }
+      } else {
+        item.insertText = useAlias
+          ? `${identifier}|${resource.title}`
+          : identifier;
+      }
       item.commitCharacters = useAlias ? [] : linkCommitCharacters;
       item.range = replacementRange;
       item.command = COMPLETION_CURSOR_MOVE;
@@ -237,7 +298,8 @@ export class WikilinkCompletionProvider
         return item;
       })
     );
-    const placeholders = Array.from(this.graph.placeholders.values()).map(
+
+    const placeholders = isGollum ? [] : Array.from(this.graph.placeholders.values()).map(
       uri => {
         const item = new vscode.CompletionItem(
           uri.path,
