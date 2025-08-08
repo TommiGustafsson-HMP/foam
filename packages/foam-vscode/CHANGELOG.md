@@ -2,6 +2,11 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.2.1] - 2025-08-08
+
+- Fix section headers in wikilinks.
+- Fix section header autocompletion.
+
 ## [1.2.0] - 2025-08-04
 
 - Changed setting names by removing dashes.
