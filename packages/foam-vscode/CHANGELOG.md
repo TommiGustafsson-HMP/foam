@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.2.4] - 2025-08-08
+
+- Add move left by 2 characters to section heading autocompletion when necessary.
+
 ## [1.2.3] - 2025-08-08
 
 - Remove move left by 2 characters from section heading autocompletion.

@@ -60,6 +60,9 @@ export default async function activate(
             const preChar = document
               .lineAt(changedPosition.line)
               .text.charAt(changedPosition.character - 1);
+            const preChar2 = changedPosition.character - 2 >= 0 ? document
+              .lineAt(changedPosition.line)
+              .text.charAt(changedPosition.character - 2) : '';
 
             const { character: selectionChar, line: selectionLine } =
               e.selections[0].active;
@@ -67,21 +70,28 @@ export default async function activate(
             const { line: completionLine, character: completionChar } =
               currentPosition;
 
-            const inCompleteBySectionDivider =
-              linkCommitCharacters.includes(preChar) &&
-              selectionLine === completionLine &&
-              selectionChar === completionChar + 1;
-
+            const isGollum = getFoamVsCodeConfig('wikilinks.syntax') === 'gollum';
+            let inCompleteBySectionDivider: boolean = false;
+            if (isGollum && selectionLine === completionLine) {
+              if(preChar === ']' && preChar2 === ']' && selectionChar === completionChar + 2) {
+                inCompleteBySectionDivider = true;
+              } else if (linkCommitCharacters.includes(preChar) && selectionChar === completionChar + 1) {
+                inCompleteBySectionDivider = true;
+              }
+            } else {
+              inCompleteBySectionDivider =
+                linkCommitCharacters.includes(preChar) &&
+                selectionLine === completionLine &&
+                selectionChar === completionChar + 1;
+            }
+  
             cursorChange.dispose();
             if (inCompleteBySectionDivider) {
-              const wikiLinkSyntax = getFoamVsCodeConfig('wikilinks.syntax');
-              if (wikiLinkSyntax !== 'gollum') {
-                await vscode.commands.executeCommand('cursorMove', {
-                  to: 'left',
-                  by: 'character',
-                  value: 2,
-                });
-              }
+              await vscode.commands.executeCommand('cursorMove', {
+                to: 'left',
+                by: 'character',
+                value: 2,
+              });
             }
           }
         );
