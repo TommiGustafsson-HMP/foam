@@ -78,12 +78,18 @@ export default async function activate(
 
             const isGollum = getFoamVsCodeConfig('wikilinks.syntax') === 'gollum';
             let inCompleteBySectionDivider: boolean = false;
-            if (isGollum && selectionLine === completionLine) {
-              if(preChar === ']' && preChar2 === ']' && selectionChar === completionChar + 2) {
-                inCompleteBySectionDivider = true;
-              } else if (linkCommitCharacters.includes(preChar) && selectionChar === completionChar + 1) {
-                inCompleteBySectionDivider = true;
-              } else if ((afterChar !== ']' || afterChar2 !== ']') && selectionChar === completionChar + 2) {
+            let moveCharCount = 2;
+            if (isGollum) {
+              if(selectionLine === completionLine) {
+                if(preChar === ']' && preChar2 === ']' && selectionChar === completionChar + 2) {
+                  inCompleteBySectionDivider = true;
+                } else if (linkCommitCharacters.includes(preChar) && selectionChar === completionChar + 1) {
+                  inCompleteBySectionDivider = true;
+                } else if ((afterChar !== ']' || afterChar2 !== ']') && selectionChar === completionChar + 2) {
+                  inCompleteBySectionDivider = true;
+                }
+              } else if (selectionLine === completionLine + 1 && selectionChar === 0) {
+                moveCharCount = 1;
                 inCompleteBySectionDivider = true;
               }
             } else {
@@ -98,7 +104,7 @@ export default async function activate(
               await vscode.commands.executeCommand('cursorMove', {
                 to: 'left',
                 by: 'character',
-                value: 2,
+                value: moveCharCount,
               });
             }
           }

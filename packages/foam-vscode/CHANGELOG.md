@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.2.6] - 2025-08-12
+
+- Move the cursor 1 character it ends on a new line.
+
 ## [1.2.5] - 2025-08-12
 
 - Further fixing to moving cursor 2 characters left when necessary.
