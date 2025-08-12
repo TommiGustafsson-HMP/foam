@@ -74,11 +74,14 @@ export default async function activate(
 
             cursorChange.dispose();
             if (inCompleteBySectionDivider) {
-              await vscode.commands.executeCommand('cursorMove', {
-                to: 'left',
-                by: 'character',
-                value: 2,
-              });
+              const wikiLinkSyntax = getFoamVsCodeConfig('wikilinks.syntax');
+              if (wikiLinkSyntax !== 'gollum') {
+                await vscode.commands.executeCommand('cursorMove', {
+                  to: 'left',
+                  by: 'character',
+                  value: 2,
+                });
+              }
             }
           }
         );
