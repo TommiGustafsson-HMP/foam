@@ -63,6 +63,12 @@ export default async function activate(
             const preChar2 = changedPosition.character - 2 >= 0 ? document
               .lineAt(changedPosition.line)
               .text.charAt(changedPosition.character - 2) : '';
+            const afterChar = document
+              .lineAt(changedPosition.line)
+              .text.charAt(changedPosition.character);
+            const afterChar2 = document
+              .lineAt(changedPosition.line)
+              .text.charAt(changedPosition.character + 1);
 
             const { character: selectionChar, line: selectionLine } =
               e.selections[0].active;
@@ -76,6 +82,8 @@ export default async function activate(
               if(preChar === ']' && preChar2 === ']' && selectionChar === completionChar + 2) {
                 inCompleteBySectionDivider = true;
               } else if (linkCommitCharacters.includes(preChar) && selectionChar === completionChar + 1) {
+                inCompleteBySectionDivider = true;
+              } else if ((afterChar !== ']' || afterChar2 !== ']') && selectionChar === completionChar + 2) {
                 inCompleteBySectionDivider = true;
               }
             } else {
