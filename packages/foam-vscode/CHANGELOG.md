@@ -2,6 +2,10 @@
 
 All notable changes to the "foam-vscode-gollum" extension will be documented in this file.
 
+## [1.2.8] - 2025-08-15
+
+- Fix section heading link conversion to render dots as dashes.
+
 ## [1.2.7] - 2025-08-15
 
 - Fix section heading completion for the existing page.
