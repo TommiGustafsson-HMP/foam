@@ -106,8 +106,8 @@ export abstract class Resource {
     if (anchor) {
       return anchor.toLowerCase()
         .normalize("NFKD").replace(/[\u0300-\u036f]/g, "") // remove accents
-        .replace(/[^\w\s-]/g, "") // remove non-word characters (except space and dash)
-        .replace(/\s+/g, "-");    // replace spaces with dashes
+        .replace(/[^\.\w\s-]/g, "") // remove non-word characters (except space, dot, and dash)
+        .replace(/[\s\.]+/g, "-");    // replace spaces with dashes
     }
     return null;    
   }
