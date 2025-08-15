@@ -15,6 +15,9 @@ export abstract class MarkdownLink {
   private static directLinkRegex = new RegExp(
     /\[(.*)\]\(<?([^#>]*)?#?([^\]>]+)?>?\)/
   );
+  private static wikilinkRegex3 = new RegExp(
+    /\|\s*#/
+  );
 
   public static convertGollumTarget(target: string) {
     let isRoot = false;
@@ -57,6 +60,7 @@ export abstract class MarkdownLink {
           let [, alias, target, section] = this.wikilinkRegex2.exec(
             link.rawText
           );
+          const isMatch3 = this.wikilinkRegex3.test(link.rawText);
 
           const extension = path.extname(alias) ?? '';
           let imageProperties = '';
@@ -70,9 +74,13 @@ export abstract class MarkdownLink {
             alias = '';
             linkType = "image";
           }
-          else if ((target ?? '') === '') {
+          else if ((target ?? '') === '') {           
+            if (!isMatch3) {
               target = alias;
               alias = '';
+            } else {
+              target = '';
+            } 
           }
 
           let {target: target2, isRoot, parentCount} = this.convertGollumTarget(target);

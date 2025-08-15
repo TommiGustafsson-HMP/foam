@@ -141,13 +141,21 @@ export class SectionCompletionProvider
       return null;
     }
     
+    const isGollum = getFoamVsCodeConfig('wikilinks.syntax') === 'gollum';
     let resourceId: string | URI = null;
     if(match[1] === '#') {
       resourceId = fromVsCodeUri(document.uri);
     } else {
       const slice =  match[1].slice(0, -1);
-      const indexOfPipe = slice.lastIndexOf('|');
-      resourceId = slice.substring(indexOfPipe + 1);
+      if (isGollum) {
+        const indexOfPipe = slice.lastIndexOf('|');
+        resourceId = slice.substring(indexOfPipe + 1);
+        if (resourceId === '') {
+          resourceId = fromVsCodeUri(document.uri);
+        }
+      } else {
+        resourceId = slice;
+      }
     }
  
     const resource = this.ws.find(resourceId);
